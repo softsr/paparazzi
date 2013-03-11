@@ -56,6 +56,7 @@ void electrical_init(void) {
 #ifdef MILLIAMP_AT_FULL_THROTTLE
   electrical_priv.nonlin_factor = CURRENT_ESTIMATION_NONLINEARITY;
 #endif
+  electrical.vsupply_low = AUTOPILOT_BAT_LOW_TIME;
 }
 
 void electrical_periodic(void) {

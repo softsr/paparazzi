@@ -313,10 +313,15 @@ static inline void ahrs_update_mag_2d(void) {
   //  ahrs_impl.rate_correction.q += residual_imu.y*(1<<5)/410;
   //  ahrs_impl.rate_correction.r += residual_imu.z*(1<<5)/410;
 
+#ifdef AHRS_MAG_RATE_COEFF
+    ahrs_impl.rate_correction.p += residual_imu.x*AHRS_MAG_RATE_COEFF/16;
+    ahrs_impl.rate_correction.q += residual_imu.y*AHRS_MAG_RATE_COEFF/16;
+    ahrs_impl.rate_correction.r += residual_imu.z*AHRS_MAG_RATE_COEFF/16;
+#else
   ahrs_impl.rate_correction.p += residual_imu.x/16;
   ahrs_impl.rate_correction.q += residual_imu.y/16;
   ahrs_impl.rate_correction.r += residual_imu.z/16;
-
+#endif
 
   // residual_ltp FRAC = 2 * MAG_FRAC = 22
   // high_rez_bias = RATE_FRAC+28 = 40

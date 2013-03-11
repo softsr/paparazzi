@@ -20,6 +20,7 @@
 *.depend
 
 *.aux
+*.pnws
 
 # Eclipse IDE project files
 *.cproject

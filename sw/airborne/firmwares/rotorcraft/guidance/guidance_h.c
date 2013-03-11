@@ -168,15 +168,17 @@ void guidance_h_read_rc(bool_t  in_flight) {
 #ifdef GUIDANCE_H_USE_SPEED_REF
     if(in_flight) {
       int32_t psi, s_psi, c_psi, rc_x, rc_y;
-      rc_x   = (int32_t)radio_control.values[RADIO_PITCH] * GUIDANCE_H_MAX_SPEED / MAX_PPRZ;
-      rc_y   = (int32_t)radio_control.values[RADIO_ROLL]  * GUIDANCE_H_MAX_SPEED / MAX_PPRZ;
-      //DeadBand(rc_x, GUIDANCE_H_RC_SPEED_DEAD_BAND);
-      //DeadBand(rc_y, GUIDANCE_H_RC_SPEED_DEAD_BAND);
+      int64_t max_speed = (b2_gh_max_speed) * (1 << (INT32_SPEED_FRAC - B2_GH_SPEED_REF_FRAC));
+      rc_x   = (int32_t)((int64_t)radio_control.values[RADIO_PITCH] * max_speed / MAX_PPRZ);
+      rc_y   = -(int32_t)((int64_t)radio_control.values[RADIO_ROLL]  * max_speed / MAX_PPRZ);
+      DeadBand(rc_x, GUIDANCE_H_RC_SPEED_DEAD_BAND);
+      DeadBand(rc_y, GUIDANCE_H_RC_SPEED_DEAD_BAND);
+      /* Rotate to body frame */
       psi = stateGetNedToBodyEulers_i()->psi;
       PPRZ_ITRIG_SIN(s_psi, psi);
       PPRZ_ITRIG_COS(c_psi, psi);
-      guidance_h_speed_sp.x   = (-c_psi * rc_x + s_psi * rc_y) / (1 << INT32_TRIG_FRAC);
-      guidance_h_speed_sp.y   = (-s_psi * rc_x - c_psi * rc_y) / (1 << INT32_TRIG_FRAC);
+      guidance_h_speed_sp.x = (int32_t)(((int64_t)-c_psi * rc_x + (int64_t)s_psi * rc_y) / (1 << INT32_TRIG_FRAC));
+      guidance_h_speed_sp.y = (int32_t)(((int64_t)-s_psi * rc_x - (int64_t)c_psi * rc_y) / (1 << INT32_TRIG_FRAC));
     }
 #endif
     break;
@@ -269,8 +271,10 @@ static inline void guidance_h_update_reference(bool_t use_ref) {
   /* convert our reference to generic representation */
   if (use_ref) {
 #ifdef GUIDANCE_H_USE_SPEED_REF
-    if(guidance_h_mode == GUIDANCE_H_MODE_HOVER)
+    if(guidance_h_mode == GUIDANCE_H_MODE_HOVER) {
       b2_gh_update_ref_from_speed_sp(guidance_h_speed_sp);
+      VECT2_COPY(guidance_h_pos_sp, guidance_h_pos_ref);
+    }
     else
 #endif
       b2_gh_update_ref_from_pos_sp(guidance_h_pos_sp);
@@ -361,8 +365,8 @@ static inline void guidance_h_traj_run(bool_t in_flight) {
 
   if(guidance_h_mode != GUIDANCE_H_MODE_NAV) {
     /* Add RC roll and pitch setpoints for emergency corrections */
-    //guidance_h_command_body.phi += guidance_h_rc_sp.phi;
-    //guidance_h_command_body.theta += guidance_h_rc_sp.theta;
+    guidance_h_command_body.phi += guidance_h_rc_sp.phi;
+    guidance_h_command_body.theta += guidance_h_rc_sp.theta;
   }
 
   /* Set attitude setpoint in eulers and as quaternion */

@@ -884,8 +884,8 @@ void i2c1_hw_init(void) {
   i2c1.scl_pin = GPIO_I2C1_SCL;
   i2c1.sda_pin = GPIO_I2C1_SDA;
 #elif defined(STM32F4)
-	i2c2.scl_pin = GPIO8;
-  i2c2.sda_pin = GPIO9;
+	i2c1.scl_pin = GPIO8;
+  i2c1.sda_pin = GPIO9;
 #endif
   i2c1.errors = &i2c1_errors;
   i2c1_watchdog_counter = 0;

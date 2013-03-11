@@ -29,9 +29,7 @@
 #include "mcu_periph/i2c.h"
 #include "mcu_periph/sys_time.h"
 
-
 struct ActuatorsMkk actuators_mkk;
-
 
 uint32_t actuators_delay_time;
 bool_t   actuators_delay_done;
@@ -65,10 +63,19 @@ void actuators_mkk_set(void) {
   }
 #endif
 
+  static uint8_t last_idx = ACTUATORS_MKK_NB;
+	uint8_t cur_idx = last_idx;
   for (uint8_t i=0; i<ACTUATORS_MKK_NB; i++) {
 #ifdef KILL_MOTORS
     actuators_mkk.trans[i].buf[0] = 0;
 #endif
-    i2c_submit(&ACTUATORS_MKK_DEVICE, &actuators_mkk.trans[i]);
+    if(cur_idx >= ACTUATORS_MKK_NB)
+			cur_idx = 0;
+    if (!i2c_submit(&ACTUATORS_MKK_DEVICE, &actuators_mkk.trans[cur_idx])) {
+			last_idx = cur_idx;
+			return;
+		}
+		cur_idx++;
   }
+	last_idx = ACTUATORS_MKK_NB;
 }

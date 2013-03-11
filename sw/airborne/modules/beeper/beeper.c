@@ -44,16 +44,11 @@
 #define		BEEP_MODE_OK_TICKS_OFF						1
 #define		BEEP_MODE_OK_TICKS_NUM						2
 
-#define LowBatLevel()	(bat_low == 0)
-
-#define BAT_CRITICAL_TIME	80
-
 uint8_t beep_mode;
 uint8_t beep_num;
 bool_t	beeper_on;
 uint16_t beep_cnt;
 bool_t motor_is_on = FALSE;
-uint16_t bat_low;
 
 void beeper_init(){
 #if defined(STM32F1) || defined(STM32F2)
@@ -70,7 +65,6 @@ void beeper_init(){
 	BEEPER_OFF;
 	beep_mode = BEEP_MODE_OK;
 	beep_num = BEEP_MODE_OK_TICKS_NUM;
-	bat_low = BAT_CRITICAL_TIME;
 }
 
 #define BEEP_CYCLE(_TICKS_ON, _TICKS_OFF) {						\
@@ -111,17 +105,10 @@ void beeper_init(){
 			motor_is_on = autopilot_motors_on;																	\
 		}																																		\
 	}																																			\
-	if(electrical.vsupply < LOW_BAT_LEVEL*10) {                             \
-		if(bat_low > 0)                                                       \
-			bat_low--;                                                          \
-		else                                                                  \
-		  set_beep_mode(BEEP_MODE_LOW_BAT, BEEP_MODE_LOW_BAT);								\
-	}                                                                       \
+	if(LowBatLevel())                             \
+		set_beep_mode(BEEP_MODE_LOW_BAT, BEEP_MODE_LOW_BAT);								\
 	else                                                                    \
-		if(bat_low && bat_low < BAT_CRITICAL_TIME) {                                                         \
-			bat_low = BAT_CRITICAL_TIME;                              \
-			set_beep_mode(BEEP_MODE_LOW_BAT, BEEP_MODE_OK);											\
-		}                                                                     \
+		set_beep_mode(BEEP_MODE_LOW_BAT, BEEP_MODE_OK);											\
 }																																				
 
 void periodic_task_beeper(){

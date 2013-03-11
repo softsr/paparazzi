@@ -222,10 +222,11 @@ void autopilot_set_mode(uint8_t new_autopilot_mode) {
 #define AP_IN_FLIGHT_MIN_SPEED SPEED_BFP_OF_REAL(0.2)
 #endif
 #ifndef AP_IN_FLIGHT_MIN_ACCEL
-#define AP_IN_FLIGHT_MIN_ACCEL ACCEL_BFP_OF_REAL(1.0)
+#define AP_IN_FLIGHT_MIN_ACCEL ACCEL_BFP_OF_REAL(1.5)
 #endif
 
 static inline void autopilot_check_in_flight( bool_t motors_on ) {
+  static int32_t accel_filter;
   if (autopilot_in_flight) {
     if(!motors_on) {
       autopilot_in_flight = FALSE;
@@ -235,7 +236,7 @@ static inline void autopilot_check_in_flight( bool_t motors_on ) {
     if (autopilot_in_flight_counter > 0) {
       if (THROTTLE_STICK_DOWN() && ((autopilot_mode == AP_MODE_HOVER_Z_HOLD
                                      && (abs(ins_ltp_speed.z) < AP_IN_FLIGHT_MIN_SPEED)
-                                     && (abs(ins_ltp_accel.z) < AP_IN_FLIGHT_MIN_ACCEL))
+                                     && (((accel_filter*5 + abs(ins_ltp_accel.z))/6) < AP_IN_FLIGHT_MIN_ACCEL))
                                    || (autopilot_mode != AP_MODE_NAV && autopilot_mode != AP_MODE_HOVER_Z_HOLD))) {
         autopilot_in_flight_counter--;
         if (autopilot_in_flight_counter == 0) {

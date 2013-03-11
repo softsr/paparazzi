@@ -31,7 +31,6 @@
 
 #include "generated/airframe.h"
 
-
 struct ActuatorsMkk {
   struct i2c_transaction trans[ACTUATORS_MKK_NB];
 };
