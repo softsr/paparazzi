@@ -24,12 +24,14 @@
 #ifdef STM32F4
 # include <libopencm3/stm32/f4/rcc.h>
 # include <libopencm3/stm32/f4/gpio.h>
+#include <libopencm3/stm32/f4/nvic.h>
 #elif defined STM32F1
 # include <libopencm3/stm32/f1/rcc.h>
 # include <libopencm3/stm32/f1/gpio.h>
+#include <libopencm3/stm32/f1/nvic.h>
 #endif
 #include <libopencm3/stm32/exti.h>
-#include <libopencm3/stm32/nvic.h>
+
 
 /*
  *               krooz
@@ -53,8 +55,6 @@ bool_t periodic_flag;
 
 #if defined(STM32F1) || defined(STM32F2)
 extern void exti9_5_irq_handler(void);
-#elif defined(STM32F4)
-extern void exti9_5_isr(void);
 #endif
 
 static inline void krooz_init_hw( void ) {
