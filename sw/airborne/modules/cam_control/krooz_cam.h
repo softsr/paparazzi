@@ -34,8 +34,12 @@ extern int16_t tilt_coeff;
 extern int16_t pan_coeff;
 extern int16_t tilt_rate;
 extern int16_t pan_rate;
+extern int16_t pan_down;
+extern int16_t pan_area;
 #endif
 
+extern void krooz_cam_init(void);
+extern void krooz_servo_periodic(void);
 extern void krooz_cam_periodic(void);
 extern void krooz_cam_event(void);
 

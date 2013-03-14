@@ -28,6 +28,7 @@
 		<define name="USE_RC_FP_BLOCK_SWITCHING"/>
     <define name="USE_ATTITUDE_REF" value="0"/>
     <define name="KILL_ON_GROUND_DETECT" value="TRUE"/>
+    <define name="CAM_SETUP" value="TRUE"/>
   </firmware>
 	
 <!--									 Using Geo Mag module										 -->
@@ -36,6 +37,16 @@
 		<load name="geo_mag.xml"/>
     <load name="sys_mon.xml"/>-->
 		<load name="beeper.xml"/>
+    <load name="krooz_cam.xml">
+      <define name="TILT_CENTER" value="1532"/>
+			<define name="PAN_CENTER" value="1420"/>
+			<define name="TILT_COEFF" value="-4000"/>
+			<define name="PAN_COEFF" value="1500"/>
+			<define name="TILT_RATE" value="-300"/>
+			<define name="PAN_RATE" value="110"/>
+      <define name="PAN_AREA" value="380"/>
+      <define name="PAN_DOWN" value="1700"/>
+    </load>
     </modules>
 	
   <commands>

@@ -64,18 +64,18 @@ void actuators_mkk_set(void) {
 #endif
 
   static uint8_t last_idx = ACTUATORS_MKK_NB;
-	uint8_t cur_idx = last_idx;
+  uint8_t cur_idx = last_idx;
   for (uint8_t i=0; i<ACTUATORS_MKK_NB; i++) {
 #ifdef KILL_MOTORS
     actuators_mkk.trans[i].buf[0] = 0;
 #endif
     if(cur_idx >= ACTUATORS_MKK_NB)
-			cur_idx = 0;
+      cur_idx = 0;
     if (!i2c_submit(&ACTUATORS_MKK_DEVICE, &actuators_mkk.trans[cur_idx])) {
-			last_idx = cur_idx;
-			return;
-		}
-		cur_idx++;
+      last_idx = cur_idx;
+      return;
+    }
+    cur_idx++;
   }
-	last_idx = ACTUATORS_MKK_NB;
+  last_idx = ACTUATORS_MKK_NB;
 }

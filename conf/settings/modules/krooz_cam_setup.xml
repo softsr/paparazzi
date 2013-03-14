@@ -1,0 +1,17 @@
+<!DOCTYPE settings SYSTEM "../settings.dtd">
+
+<settings>
+  <dl_settings>
+
+  <dl_settings NAME="Cam Set">
+		<dl_setting var="tilt_center" MIN="1000" STEP="10" MAX="2000" unit="u" shortname="tilt_ctr"/>
+    <dl_setting var="pan_down" MIN="1000" STEP="10" MAX="2000" unit="u" shortname="pan_down"/>
+    <dl_setting var="pan_area" MIN="-1000" STEP="10" MAX="1000" unit="u" shortname="pan_area"/>
+		<dl_setting var="tilt_coeff" MIN="-5000" STEP="100" MAX="10000" unit="u" shortname="tilt"/>
+		<dl_setting var="pan_coeff" MIN="-5000" STEP="100" MAX="10000" unit="u" shortname="pan"/>
+		<dl_setting var="tilt_rate" MIN="-1000" STEP="10" MAX="1000" unit="u" shortname="t_rate"/>
+		<dl_setting var="pan_rate" MIN="-1000" STEP="10" MAX="1000" unit="u" shortname="p_rate"/>
+	</dl_settings>
+
+  </dl_settings>
+</settings>

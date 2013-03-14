@@ -27,7 +27,15 @@
 #define ACTUATORS_PWM_ARCH_H
 
 #include "std.h"
+#include BOARD_CONFIG
 
+#ifdef BOARD_KROOZ
+#ifdef USE_SERVO_11
+#define ACTUATORS_PWM_NB 11
+#else
+#define ACTUATORS_PWM_NB 10
+#endif
+#else // !BOARD_KROOZ
 #if USE_SERVOS_7AND8
 #if defined(BOARD_LISA_M) && USE_I2C1
 #error "You cannot use Servos 7and8 and I2C1 at the same time"
@@ -36,6 +44,7 @@
 #endif
 #else
 #define ACTUATORS_PWM_NB 6
+#endif
 #endif
 
 extern int32_t actuators_pwm_values[ACTUATORS_PWM_NB];
