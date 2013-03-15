@@ -3,6 +3,7 @@
 <module name="krooz_cam" dir="cam_control">
   <header>
     <file name="krooz_cam.h"/>
+    <file name="cam_power.h"/>
   </header>
   <init fun="krooz_cam_init()"/>
   <periodic fun="krooz_servo_periodic()" freq="192."/>
@@ -12,6 +13,8 @@
     <file name="krooz_cam.c"/>
     <file name="cam_power.c"/>
 		<define name="USE_SERVOS_9AND10" value="1"/>
+    <define name="USE_CAM" value="1"/>
+    <define name="VIDEO" value="1"/>
   </makefile>
 </module>
 

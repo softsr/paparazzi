@@ -29,14 +29,17 @@
 //#include "led.h"
 
 #ifdef CAM_SETUP
-extern int16_t tilt_center;
+extern int16_t pan_center;
 extern int16_t tilt_coeff;
 extern int16_t pan_coeff;
 extern int16_t tilt_rate;
 extern int16_t pan_rate;
-extern int16_t pan_down;
-extern int16_t pan_area;
+extern int16_t tilt_down;
+extern int16_t tilt_area;
 #endif
+
+extern int16_t rotorcraft_cam_tilt;
+extern int16_t rotorcraft_cam_pan;
 
 extern void krooz_cam_init(void);
 extern void krooz_servo_periodic(void);

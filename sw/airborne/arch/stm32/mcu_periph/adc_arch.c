@@ -87,14 +87,13 @@
 #if defined(STM32F1)
 #include <libopencm3/stm32/f1/rcc.h>
 #include <libopencm3/stm32/f1/adc.h>
-#include <libopencm3/stm32/f1/gpio.h>
 #include <libopencm3/stm32/f1/nvic.h>
 #elif defined(STM32F4)
 #include <libopencm3/stm32/f4/rcc.h>
 #include <libopencm3/stm32/f4/adc.h>
-#include <libopencm3/stm32/f4/gpio.h>
 #include <libopencm3/stm32/f4/nvic.h>
 #endif
+#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/timer.h>
 #include <string.h>
 #include "std.h"

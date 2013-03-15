@@ -38,14 +38,15 @@
     <load name="sys_mon.xml"/>-->
 		<load name="beeper.xml"/>
     <load name="krooz_cam.xml">
-      <define name="TILT_CENTER" value="1532"/>
-			<define name="PAN_CENTER" value="1420"/>
-			<define name="TILT_COEFF" value="-4000"/>
-			<define name="PAN_COEFF" value="1500"/>
-			<define name="TILT_RATE" value="-300"/>
-			<define name="PAN_RATE" value="110"/>
-      <define name="PAN_AREA" value="380"/>
-      <define name="PAN_DOWN" value="1700"/>
+      <define name="CAM_TEST" value="1"/><!---->
+      <define name="PAN_CENTER" value="1500"/>
+			<define name="TILT_CENTER" value="1420"/>
+			<define name="PAN_COEFF" value="-4460"/>
+			<define name="TILT_COEFF" value="1650"/>
+			<define name="PAN_RATE" value="-300"/>
+			<define name="TILT_RATE" value="110"/>
+      <define name="TILT_AREA" value="380"/>
+      <define name="TILT_DOWN" value="1700"/>
     </load>
     </modules>
 	

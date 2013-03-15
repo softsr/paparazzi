@@ -105,16 +105,15 @@ endif
 CFLAGS = -I. -I./$(ARCH) -I../ext/libopencm3/include $(INCLUDES)
 CFLAGS += -D__thumb2__ -Wall -O$(OPT)
 ifeq ($(ARCH_L), )
-CFLAGS += -msoft-float
+CFLAGS += -msoft-float -mfix-cortex-m3-ldrd
 else ifeq ($(ARCH_L),f4)
-ifndef HARD_FLOAT
+ifneq ($(HARD_FLOAT),1)
 CFLAGS += -msoft-float
 else
 CFLAGS += -g -mfloat-abi=hard -mfpu=fpv4-sp-d16 -MD
 endif
 endif
 CFLAGS += -Wl,--gc-sections
-CFLAGS += -mfix-cortex-m3-ldrd
 CFLAGS += -mcpu=$(MCU) -mthumb -ansi
 CFLAGS += -std=gnu99
 #CFLAGS += -malignment-traps
@@ -151,21 +150,21 @@ LDFLAGS += -T$(LDSCRIPT) -nostartfiles -O$(OPT) -mthumb -mcpu=$(MCU)
 ifeq ($(ARCH_L), )
 LDFLAGS += -mfix-cortex-m3-ldrd -msoft-float
 else ifeq ($(ARCH_L),f4)
-ifndef HARD_FLOAT
-LDFLAGS += -mfix-cortex-m3-ldrd -msoft-float
+ifneq ($(HARD_FLOAT),1)
+LDFLAGS += -msoft-float
 else
-LDFLAGS += -lnosys -D__thumb2__\
-           -mfloat-abi=hard -mfpu=fpv4-sp-d16
+LDFLAGS += -D__thumb2__
+LDFLAGS += -lnosys -mfloat-abi=hard -mfpu=fpv4-sp-d16
 endif
 endif
 
 LDFLAGS += -Wl,-Map=$(OBJDIR)/$(TARGET).map,--cref,--gc-sections
-LDLIBS  += -lc -lm -lgcc
 ifneq ($(ARCH_L), )
 LDLIBS  += -lopencm3_stm32$(ARCH_L)
 else
 LDLIBS  += -lopencm3_stm32f1
 endif
+LDLIBS  += -lc -lm -lgcc
 
 CPFLAGS = -j .isr_vector -j .text -j .data
 CPFLAGS_BIN = -Obinary

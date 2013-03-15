@@ -114,7 +114,7 @@
 /* GPIO mapping for ADC1 pins, overwrites the default in arch/stm32/mcu_periph/adc_arch.c */
 // FIXME, this is not very nice, is also stm lib specific
 #ifdef USE_AD1
-#define ADC1_GPIO_INIT(gpio) {                                          \
+#define ADC1_GPIO_INIT() {                                          \
     gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO3 | GPIO0 | GPIO2 | GPIO1 | GPIO4 | GPIO5); 	\
   }
 #endif // USE_AD1

@@ -63,7 +63,7 @@ int32_t cam_min_alt = CAM_MIN_ALT;
 
 #ifdef ADC_CHANNEL_CAM1
 struct adc_buf cam1_state;
-int32_t cam1_state_val;
+int16_t cam1_state_val;
 #endif
 #ifdef CAMERA_2
 #ifdef ADC_CHANNEL_CAM2
@@ -244,6 +244,8 @@ void kamera_init( void )
 #if defined(STM32F4)
   rcc_peripheral_enable_clock(&RCC_AHB1ENR, CAM_SW_GPIO_CLK);
   gpio_mode_setup(CAM_SW_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, CAM_SW_GPIO_PIN);
+  rcc_peripheral_enable_clock(&RCC_AHB1ENR, CAM_V_GPIO_CLK);
+  gpio_mode_setup(CAM_V_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, CAM_V_GPIO_PIN);
 #endif
 
   CamSet();
@@ -251,7 +253,7 @@ void kamera_init( void )
   stage_photo_num = STAGE_PHOTO_NUM;
   shot_period = SHOT_PERIOD*4;
 #ifdef VIDEO_1
-  VideoSet(); //P1.22 auf High
+  VideoSet();
 #endif
   cam_counter = 0;
   
@@ -270,7 +272,7 @@ void kamera_init( void )
 
 void periodic_task_kamera(void) //4Hz
 {
-
+  
   cam1_state_val = cam1_state.sum / cam1_state.av_nb_sample;
 
 #ifdef VIDEO_1

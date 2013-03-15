@@ -51,30 +51,31 @@
 #ifndef TILT_CENTER
 #define TILT_CENTER 1500
 #endif
-#ifndef PAN_AREA
-#define PAN_AREA 300
+#ifndef TILT_AREA
+#define TILT_AREA 300
 #endif
-#ifndef PAN_DOWN
-#define PAN_DOWN 1800
+#ifndef TILT_DOWN
+#define TILT_DOWN 1800
 #endif
 
 bool_t cam_flag;
 bool_t servo_flag;
 #ifdef CAM_SETUP
-int16_t tilt_center = TILT_CENTER;
+int16_t pan_center = PAN_CENTER;
 int16_t tilt_coeff = TILT_COEFF;
 int16_t pan_coeff = PAN_COEFF;
 int16_t tilt_rate = TILT_RATE;
 int16_t pan_rate = PAN_RATE;
-int16_t pan_down = PAN_DOWN;
-int16_t pan_area = PAN_AREA;
+int16_t tilt_down = TILT_DOWN;
+int16_t tilt_area = TILT_AREA;
 #endif
-int16_t cam_tilt = 0;
-int16_t cam_pan = 0;
+int16_t rotorcraft_cam_tilt = 0;
+int16_t rotorcraft_cam_pan = 0;
 int32_t radio_cam_value = 0;
 
 void krooz_cam_init() {
   ActuatorsPwmInit();
+  kamera_init();
 }
 
 void krooz_cam_periodic() {
@@ -88,34 +89,34 @@ void krooz_servo_periodic() {
 void krooz_cam_event(void) {
   if(servo_flag) {
 #ifdef CAM_SETUP
-    int32_t angle_buf = stateGetNedToBodyEulers_i()->phi * tilt_coeff / INT32_ANGLE_PI;
-    int32_t rate_buf = stateGetBodyRates_i()->p * tilt_rate/INT32_ANGLE_PI;
-    cam_tilt = (int16_t)angle_buf + (int16_t)rate_buf + tilt_center;
-    angle_buf = stateGetNedToBodyEulers_i()->theta * pan_coeff/INT32_ANGLE_PI;
-    rate_buf = stateGetBodyRates_i()->q * pan_rate / INT32_ANGLE_PI;
+    int32_t angle_buf = stateGetNedToBodyEulers_i()->phi * pan_coeff / INT32_ANGLE_PI;
+    int32_t rate_buf = stateGetBodyRates_i()->p * pan_rate/INT32_ANGLE_PI;
+    rotorcraft_cam_pan = (int16_t)angle_buf + (int16_t)rate_buf + pan_center;
+    angle_buf = stateGetNedToBodyEulers_i()->theta * tilt_coeff / INT32_ANGLE_PI;
+    rate_buf = stateGetBodyRates_i()->q * tilt_rate / INT32_ANGLE_PI;
 #else
-    int32_t angle_buf = stateGetNedToBodyEulers_i()->phi * TILT_COEFF / INT32_ANGLE_PI;
-    int32_t rate_buf = stateGetBodyRates_i()->p * TILT_RATE / INT32_ANGLE_PI;
-    cam_tilt = (int16_t)angle_buf + (int16_t)rate_buf + TILT_CENTER;
-    angle_buf = stateGetNedToBodyEulers_i()->theta * PAN_COEFF/INT32_ANGLE_PI;
-    rate_buf = stateGetBodyRates_i()->q * PAN_RATE / INT32_ANGLE_PI;
+    int32_t angle_buf = stateGetNedToBodyEulers_i()->phi * PAN_COEFF / INT32_ANGLE_PI;
+    int32_t rate_buf = stateGetBodyRates_i()->p * PAN_RATE / INT32_ANGLE_PI;
+    rotorcraft_cam_pan = (int16_t)angle_buf + (int16_t)rate_buf + PAN_CENTER;
+    angle_buf = stateGetNedToBodyEulers_i()->theta * TILT_COEFF / INT32_ANGLE_PI;
+    rate_buf = stateGetBodyRates_i()->q * TILT_RATE / INT32_ANGLE_PI;
 #endif
     if(radio_control.status == RC_OK)
       radio_cam_value = (radio_cam_value*49 + (int32_t)radio_control.values[RADIO_CAM]) / 50;
     if(autopilot_mode != AP_MODE_NAV)
 #if CAM_SETUP == 1
-      cam_pan = (int16_t)angle_buf + (radio_cam_value - MAX_PPRZ)*pan_area/MAX_PPRZ + (int16_t)rate_buf + pan_down;
+      rotorcraft_cam_tilt = (int16_t)angle_buf + (radio_cam_value - MAX_PPRZ) * tilt_area/MAX_PPRZ + (int16_t)rate_buf + tilt_down;
 #else
-      cam_pan = (int16_t)angle_buf + (radio_cam_value - MAX_PPRZ)*PAN_AREA/MAX_PPRZ + (int16_t)rate_buf + PAN_DOWN;
+      rotorcraft_cam_tilt = (int16_t)angle_buf + (radio_cam_value - MAX_PPRZ) * TILT_AREA/MAX_PPRZ + (int16_t)rate_buf + TILT_DOWN;
 #endif
     else
 #if CAM_SETUP == 1
-      cam_pan = (int16_t)angle_buf + pan_down + (int16_t)rate_buf;
+      rotorcraft_cam_tilt = (int16_t)angle_buf + tilt_down + (int16_t)rate_buf;
 #else
-      cam_pan = (int16_t)angle_buf + PAN_DOWN + (int16_t)rate_buf;
+      rotorcraft_cam_tilt = (int16_t)angle_buf + TILT_DOWN + (int16_t)rate_buf;
 #endif
 #ifdef CAM_TEST
-    cam_pan = (int16_t)angle_buf + radio_cam_value*600/MAX_PPRZ + (int16_t)rate_buf + PAN_CENTER;
+    rotorcraft_cam_tilt = (int16_t)angle_buf + radio_cam_value*600/MAX_PPRZ + (int16_t)rate_buf + PAN_CENTER;
 #endif
 /*
 #ifdef COMMAND_CAM_PAN
@@ -125,10 +126,10 @@ void krooz_cam_event(void) {
     /commands[COMMAND_CAM_TILT] = cam_tilt;
 #endif
 */  
-    Bound(cam_tilt, 900, 2100);
-    Bound(cam_pan, 900, 2100);
-    ActuatorPwmSet(8, cam_pan);
-    ActuatorPwmSet(9, cam_tilt);
+    Bound(rotorcraft_cam_tilt, 900, 2100);
+    Bound(rotorcraft_cam_pan, 900, 2100);
+    ActuatorPwmSet(8, rotorcraft_cam_tilt);
+    ActuatorPwmSet(9, rotorcraft_cam_pan);
     ActuatorsPwmCommit();
     servo_flag = FALSE;
   }

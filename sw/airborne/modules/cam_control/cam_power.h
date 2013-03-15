@@ -43,7 +43,6 @@
 
 #ifdef ADC_CHANNEL_CAM1
 //struct adc_buf cam1_state;
-int32_t cam1_state_val;
 #endif
 #ifdef CAMERA_2
 #ifdef ADC_CHANNEL_CAM2
@@ -88,16 +87,16 @@ struct adc_buf cam2_state;
 
 #ifdef STM32F4
 #define CAM_STATE_ON_LEVEL 	2048
-#define CamClr()	{gpio_clear(CAM_SH_GPIO, CAM_SH_GPIO_PIN);}
-#define CamSet()	{gpio_set(CAM_SH_GPIO, CAM_SH_GPIO_PIN);}
+#define CamClr()	{gpio_mode_setup(CAM_SH_GPIO, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, CAM_SH_GPIO_PIN); gpio_clear(CAM_SH_GPIO, CAM_SH_GPIO_PIN);}
+#define CamSet()	{gpio_set(CAM_SH_GPIO, CAM_SH_GPIO_PIN); gpio_mode_setup(CAM_SH_GPIO, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, CAM_SH_GPIO_PIN);}
 #define Cam1SwitchClr() {gpio_clear(CAM_SW_GPIO, CAM_SW_GPIO_PIN);}
 #define Cam1SwitchSet() {gpio_set(CAM_SW_GPIO, CAM_SW_GPIO_PIN);}
-#define CamVideoSet {} //CAM_V_GPIO->BSRR = CAM_V_GPIO_PIN;
-#define CamVideoClr() {} //CAM_V_GPIO->BRR = CAM_V_GPIO_PIN;
+#define Cam1VideoSet() {gpio_set(CAM_V_GPIO, CAM_V_GPIO_PIN);}
+#define Cam1VideoClr() {gpio_clear(CAM_V_GPIO, CAM_V_GPIO_PIN);}
 #endif
 
-//#define CamCheck() (cam1_state.sum / cam1_state.av_nb_sample > CAM_STATE_ON_LEVEL)
-#define Cam1Check() TRUE
+#define Cam1Check() (cam1_state.sum / cam1_state.av_nb_sample > CAM_STATE_ON_LEVEL)
+//#define Cam1Check() TRUE
 #define DO_SHOTS 		(radio_control.values[RADIO_SHOTS] > MAX_PPRZ / 2)
 #define SHOT_VIDEO 	(radio_control.values[RADIO_PH_VD] > MAX_PPRZ / 2)
 
@@ -114,7 +113,7 @@ extern uint16_t last_known_shot;
 extern uint8_t shot_period;
 extern uint8_t stage_photo_num;
 
-extern int32_t cam1_state_val;
+extern int16_t cam1_state_val;
 
 #ifndef SITL
 void CacheDel(uint16_t photo_nr);
