@@ -52,6 +52,9 @@ void mcu_arch_init(void) {
 #pragma message "Using 8MHz external clock to PLL it to 72MHz."
   rcc_clock_setup_in_hse_8mhz_out_72mhz();
 #elif defined(STM32F4)
+#if HARD_FLOAT
+#pragma message "Using STM32F4 hard float support."
+#endif
 #pragma message "Using 8MHz external clock to PLL it to 168MHz."
   rcc_clock_setup_hse_3v3(&hse_8mhz_3v3[CLOCK_3V3_168MHZ]);
 #endif
@@ -60,6 +63,9 @@ void mcu_arch_init(void) {
 #pragma message "Using 12MHz external clock to PLL it to 72MHz."
   rcc_clock_setup_in_hse_12mhz_out_72mhz();
 #elif defined(STM32F4)
+#if HARD_FLOAT
+#pragma message "Using STM32F4 hard float support."
+#endif
 #pragma message "Using 12MHz external clock to PLL it to 168MHz."
   rcc_clock_setup_hse_3v3(&hse_12mhz_3v3[CLOCK_3V3_168MHZ]);
 #endif

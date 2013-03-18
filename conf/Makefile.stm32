@@ -111,6 +111,7 @@ ifneq ($(HARD_FLOAT),1)
 CFLAGS += -msoft-float
 else
 CFLAGS += -g -mfloat-abi=hard -mfpu=fpv4-sp-d16 -MD
+CFLAGS += -DHARD_FLOAT
 endif
 endif
 CFLAGS += -Wl,--gc-sections
