@@ -36,8 +36,6 @@
 
 #include <libopencm3/stm32/timer.h>
 
-#include BOARD_CONFIG
-
 int32_t actuators_pwm_values[ACTUATORS_PWM_NB];
 
 //#define PCLK 72000000
@@ -258,12 +256,14 @@ void actuators_pwm_arch_init(void) {
   /* Counter enable. */
   timer_enable_counter(TIM3);
 
+#ifndef BOARD_KROOZ
 #if (!REMAP_SERVOS_5AND6 || USE_SERVOS_7AND8)
 #if !REMAP_SERVOS_5AND6
 #pragma message "Not remapping servos 5 and 6 using PB8 and PB9 -> TIM4"
 #endif
 #if USE_SERVOS_7AND8
 #pragma message "Enabeling sevros 7 and 8 on PB6, PB7 -> TIM4"
+#endif
 #endif
   /*---------------
    * Timer 4 setup
@@ -345,11 +345,10 @@ void actuators_pwm_arch_init(void) {
 #endif
 
 #if REMAP_SERVOS_5AND6 || defined(BOARD_KROOZ)
+#ifndef BOARD_KROOZ
 #ifdef REMAP_SERVOS_5AND6
 #pragma message "Remapping servo outputs 5 and 6 to PA0,PA1 -> TIM5"
 #endif
-#ifdef BOARD_KROOZ
-#pragma message "Using servo outputs 5 and 6 to PA0,PA1 -> TIM5"
 #endif
   /*---------------
    * Timer 5 setup
@@ -445,11 +444,11 @@ void actuators_pwm_arch_init(void) {
 
 /* set pulse widths from actuator values, assumed to be in us */
 void actuators_pwm_commit(void) {
+#ifndef BOARD_KROOZ
   timer_set_oc_value(TIM3, TIM_OC1, actuators_pwm_values[0]);
   timer_set_oc_value(TIM3, TIM_OC2, actuators_pwm_values[1]);
   timer_set_oc_value(TIM3, TIM_OC3, actuators_pwm_values[2]);
   timer_set_oc_value(TIM3, TIM_OC4, actuators_pwm_values[3]);
-
 #if USE_SERVOS_7AND8
   timer_set_oc_value(TIM4, TIM_OC1, actuators_pwm_values[6]);
   timer_set_oc_value(TIM4, TIM_OC2, actuators_pwm_values[7]);
@@ -460,6 +459,26 @@ void actuators_pwm_commit(void) {
 #else
   timer_set_oc_value(TIM4, TIM_OC3, actuators_pwm_values[4]);
   timer_set_oc_value(TIM4, TIM_OC4, actuators_pwm_values[5]);
+#endif
+#else
+#if USE_SERVOS_1TIL4
+  timer_set_oc_value(TIM3, TIM_OC1, actuators_pwm_values[0]);
+  timer_set_oc_value(TIM3, TIM_OC2, actuators_pwm_values[1]);
+  timer_set_oc_value(TIM3, TIM_OC3, actuators_pwm_values[2]);
+  timer_set_oc_value(TIM3, TIM_OC4, actuators_pwm_values[3]);
+#endif
+#if USE_SERVOS_5AND6
+  timer_set_oc_value(TIM4, TIM_OC1, actuators_pwm_values[4]);
+  timer_set_oc_value(TIM4, TIM_OC2, actuators_pwm_values[5]);
+#endif
+#if USE_SERVOS_7AND8
+  timer_set_oc_value(TIM5, TIM_OC1, actuators_pwm_values[6]);
+  timer_set_oc_value(TIM5, TIM_OC2, actuators_pwm_values[7]);
+#endif
+#if USE_SERVOS_9AND10
+  timer_set_oc_value(TIM5, TIM_OC3, actuators_pwm_values[8]);
+  timer_set_oc_value(TIM5, TIM_OC4, actuators_pwm_values[9]);
+#endif
 #endif
 
 }

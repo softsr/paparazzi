@@ -46,20 +46,20 @@
 
 /* PB4, Camera power On/Off */
 #define CAM_SW_GPIO GPIOB
-#define CAM_SW_GPIO_CLK RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO
-#define CAM_SW_GPIO_PIN GPIO_Pin_4
-#define CAM_SW_AFIO_REMAP GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE)
+#define CAM_SW_GPIO_CLK RCC_AHB1ENR_IOPBEN
+#define CAM_SW_GPIO_PIN GPIO4
+#define CAM_SW_AFIO_REMAP ((void)0)
 
 /* PC2, Camera shot */
 #define CAM_SH_GPIO GPIOC
-#define CAM_SH_GPIO_CLK RCC_APB2Periph_GPIOC
-#define CAM_SH_GPIO_PIN GPIO_Pin_2
+#define CAM_SH_GPIO_CLK RCC_AHB1ENR_IOPCEN
+#define CAM_SH_GPIO_PIN GPIO2
 #define CAM_SH_AFIO_REMAP ((void)0)
 
 /* PC15, Camera video */
 #define CAM_V_GPIO GPIOC
-#define CAM_V_GPIO_CLK RCC_APB2Periph_GPIOC
-#define CAM_V_GPIO_PIN GPIO_Pin_15
+#define CAM_V_GPIO_CLK RCC_AHB1ENR_IOPCEN
+#define CAM_V_GPIO_PIN GPIO15
 #define CAM_V_AFIO_REMAP ((void)0)
 
 #define BEEPER_GPIO 			GPIOC
@@ -114,7 +114,7 @@
 /* GPIO mapping for ADC1 pins, overwrites the default in arch/stm32/mcu_periph/adc_arch.c */
 // FIXME, this is not very nice, is also stm lib specific
 #ifdef USE_AD1
-#define ADC1_GPIO_INIT(gpio) {                                          \
+#define ADC1_GPIO_INIT() {                                          \
     gpio_mode_setup(GPIOC, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO3 | GPIO0 | GPIO2 | GPIO1 | GPIO4 | GPIO5); 	\
   }
 #endif // USE_AD1

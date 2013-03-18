@@ -11,6 +11,7 @@ BOARD_CFG=\"boards/$(BOARD)_$(BOARD_VERSION).h\"
 
 ARCH=stm32
 ARCH_L=f4
+HARD_FLOAT=1
 ARCH_DIR=stm32
 SRC_ARCH=arch/$(ARCH_DIR)
 $(TARGET).ARCHDIR = $(ARCH)
@@ -42,7 +43,7 @@ endif
 # default LED configuration
 #
 ifndef RADIO_CONTROL_LED
-RADIO_CONTROL_LED = 3
+RADIO_CONTROL_LED = none
 endif
 
 ifndef BARO_LED
