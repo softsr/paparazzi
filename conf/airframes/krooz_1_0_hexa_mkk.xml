@@ -1,6 +1,6 @@
 <!DOCTYPE airframe SYSTEM "airframe.dtd">
 
-<airframe name="Hexarotor Krooz 1.0 pwm">
+<airframe name="Hexarotor Krooz 1.0 Mkk">
 
   <firmware name="rotorcraft">
     <target name="ap" board="krooz_1.0"/>
@@ -10,7 +10,7 @@
       <subsystem name="radio_control" type="ppm"/>
     </target>
 
-		<subsystem name="radio_control" type="ppm"/>
+    <subsystem name="radio_control" type="ppm"/>
     <subsystem name="telemetry"     type="transparent"/>
     <subsystem name="motor_mixing"/>
     <subsystem name="actuators"     type="mkk">
@@ -18,26 +18,26 @@
       <define name="I2C_TRANSACTION_QUEUE_LEN" value="10"/>
       <define name="I2C1_CLOCK_SPEED" value="72000"/>
     </subsystem>
-		<subsystem name="stabilization" type="euler"/>
+    <subsystem name="stabilization" type="euler"/>
     <subsystem name="gps"           type="ublox"/>
     <subsystem name="imu"           type="krooz_v1.0"/>
     <subsystem name="ahrs"          type="int_cmpl_quat"/>
-		<subsystem name="ins"           type="hff"/>
-		
-		<define name="NO_RC_THRUST_LIMIT"/>
-		<define name="USE_RC_FP_BLOCK_SWITCHING"/>
+    <subsystem name="ins"           type="hff"/>
+    
+    <define name="NO_RC_THRUST_LIMIT"/>
+    <define name="USE_RC_FP_BLOCK_SWITCHING"/>
     <define name="USE_ATTITUDE_REF" value="0"/>
     <define name="KILL_ON_GROUND_DETECT" value="TRUE"/>
   </firmware>
-	
-<!--									 Using Geo Mag module										 -->
-	<modules main_freq="512">
-		<!--<load name="gps_ubx_ucenter.xml"/>
-		<load name="geo_mag.xml"/>
+  
+<!--           Using Geo Mag module         -->
+  <modules main_freq="512">
+    <!--<load name="gps_ubx_ucenter.xml"/>
+    <load name="geo_mag.xml"/>
     <load name="sys_mon.xml"/>-->
-		<load name="beeper.xml"/>
-	</modules>
-	
+    <load name="beeper.xml"/>
+  </modules>
+  
   <commands>
     <axis name="ROLL"   failsafe_value="0"/>
     <axis name="PITCH"  failsafe_value="0"/>
@@ -84,7 +84,7 @@
     <set servo="FL"   value="motor_mixing.commands[SERVO_FL]"/>
   </command_laws>
 
-	<section name="VERSION" prefix="VERSION_">
+  <section name="VERSION" prefix="VERSION_">
     <define name="MAJOR" value="1"/>
     <define name="MINOR" value="2"/>
   </section>
@@ -215,17 +215,17 @@
     <define name="HOVER_KD"    value="80"/>
     <define name="HOVER_KI"    value="20"/>
     <define name="RC_CLIMB_COEF" value ="500"/>
-	  <define name="RC_DESCENT_COEF" value ="200"/>
+    <define name="RC_DESCENT_COEF" value ="200"/>
     <define name="RC_CLIMB_DEAD_BAND" value ="160000"/>
   </section>
 
   <section name="GUIDANCE_H" prefix="GUIDANCE_H_">
-		<define name="USE_REF" value="1"/>
+    <define name="USE_REF" value="1"/>
     <define name="USE_SPEED_REF" value="1"/> <!-- using RC to control horizontal setpoint -->
     <define name="MAX_BANK" value="20" unit="deg"/>
     <define name="REF_MAX_ACCEL" value="7."/> <!-- max reference horizontal acceleration in m/s2 -->
     <define name="REF_MAX_SPEED" value="2."/> <!-- max reference horizontal speed in m/s -->
-		<define name="RC_SPEED_DEAD_BAND" value="200000"/>
+    <define name="RC_SPEED_DEAD_BAND" value="200000"/>
     <define name="PGAIN" value="100"/>
     <define name="DGAIN" value="120"/>
     <define name="IGAIN" value="10"/>
@@ -248,9 +248,6 @@
     <define name="CATASTROPHIC_BAT_LEVEL" value="13.8" unit="V"/>
     <define name="CRITIC_BAT_LEVEL" value="14.0" unit="V"/>
     <define name="LOW_BAT_LEVEL" value="14.3" unit="V"/>
-		<!-- <define name="CATASTROPHIC_BAT_LEVEL" value="12.8" unit="V"/>
-    <define name="CRITIC_BAT_LEVEL" value="13.0" unit="V"/>
-    <define name="LOW_BAT_LEVEL" value="13.2" unit="V"/> -->
     <define name="MAX_BAT_LEVEL" value="16.8" unit="V"/>
   </section>
 
