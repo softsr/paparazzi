@@ -1,0 +1,15 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<module name="cam_ir_rc" dir="cam_ir_rc">
+  <header>
+    <file name="cam_ir_rc.h"/>
+  </header>
+  <init fun="cam_ir_rc_init()"/>
+  <periodic fun="cam_ir_rc_periodic()" freq="512."/>
+<!--  <periodic fun="cam_ir_rc_periodic()" freq="4."/> -->
+	<event fun="cam_ir_rc_event()"/>
+  <makefile>	
+    <file name="cam_ir_rc.c"/>
+  </makefile>
+</module>
+

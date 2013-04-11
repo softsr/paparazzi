@@ -94,17 +94,37 @@ static inline void krooz_init_hw( void ) {
 #elif defined(STM32F4)
 	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SYSCFGEN);
 	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPBEN);
+#ifndef KROOZ_SD
 	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPAEN);
+#else
+  rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPCEN);
+#endif
 	gpio_mode_setup(GPIOB, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO5);
+#ifndef KROOZ_SD
 	gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO8);
+#else
+  gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO6);
+#endif
 	
 	nvic_enable_irq(NVIC_EXTI9_5_IRQ);
 	exti_select_source(EXTI5, GPIOB);
+#ifndef KROOZ_SD
 	exti_select_source(EXTI8, GPIOA);
+#else
+  exti_select_source(EXTI6, GPIOC);
+#endif
   exti_set_trigger(EXTI5, EXTI_TRIGGER_FALLING);
+#ifndef KROOZ_SD
 	exti_set_trigger(EXTI8, EXTI_TRIGGER_FALLING);
+#else
+  exti_set_trigger(EXTI6, EXTI_TRIGGER_FALLING);
+#endif
   exti_enable_request(EXTI5);
+#ifndef KROOZ_SD
 	exti_enable_request(EXTI8);
+#else
+  exti_enable_request(EXTI6);
+#endif
   nvic_set_priority(NVIC_EXTI9_5_IRQ, 0x0F);
 #endif
 }
@@ -133,34 +153,34 @@ static inline void mpu_config(void) {
 	  switch (imu_krooz1.mpu_status) {
 		  case 0:
 			data = 0x01;
-      I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_PWR_MGMT_1, data, imu_krooz1.mpu_status);
+      I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_PWR_MGMT_1, data, imu_krooz1.mpu_status);
 			//LED_ON(3)
 		  break;
 		  case 1:
 			  data = (2 << 3) | 			// Fsync / ext sync on gyro X (bit 3->6)
 						  (0 << 0);					// Low-Pass Filter
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_CONFIG, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_CONFIG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 2:
 		    data = 1;
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_SMPLRT_DIV, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_SMPLRT_DIV, data, imu_krooz1.mpu_status);
 		  break;
 		  case 3:
 		    data = (3 << 3);				// -2000deg/sec	
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_GYRO_CONFIG, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_GYRO_CONFIG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 4:
 		    data = (0 << 0) |			// No HPFL
 			  			 (3 << 3);			// Full Scale = 16g
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_ACCEL_CONFIG, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_ACCEL_CONFIG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 5:
 		    data = (1 << 4);			// Any read action clears INT status	
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_INT_PIN_CFG, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_INT_PIN_CFG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 6:
 		    data = 1;		// INT enable	
-        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_ADDR_ALT, MPU60X0_REG_INT_ENABLE, data, imu_krooz1.mpu_status);
+        I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_INT_ENABLE, data, imu_krooz1.mpu_status);
 			  imu_krooz1.mpu_status = Krooz1StatusIdle;
 				//LED_OFF(3)
 		  break;
@@ -243,8 +263,13 @@ void exti9_5_irq_handler(void) {
 #elif defined(STM32F4)
 void exti9_5_isr(void) {
 	/* clear EXTI */
+#ifndef KROOZ_SD
 	if(EXTI_PR & EXTI8) {
-		exti_reset_request(EXTI8);
+    exti_reset_request(EXTI8);
+#else
+  if(EXTI_PR & EXTI6) {
+    exti_reset_request(EXTI6);
+#endif
 		if (imu_krooz1.mag_status == Krooz1StatusIdle) 
 	    imu_krooz1.mag_status = Krooz1StatusDataReady;
 		//RunOnceEvery(10,LED_TOGGLE(2));

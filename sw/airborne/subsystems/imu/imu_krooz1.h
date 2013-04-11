@@ -31,6 +31,14 @@
 
 //#include "led.h"
 
+#define KROOZ_SD
+
+#ifndef KROOZ_SD
+#define MPU60X0_I2C_ADDR MPU60X0_ADDR_ALT
+#else
+#define MPU60X0_I2C_ADDR MPU60X0_ADDR
+#endif
+
 #ifdef IMU_KROOZ_VERSION_1_0
 #if !defined IMU_MAG_X_SIGN & !defined IMU_MAG_Y_SIGN & !defined IMU_MAG_Z_SIGN
 #define IMU_MAG_X_SIGN  1
@@ -118,7 +126,7 @@ static inline void mpu_read(void) {
 	  return;
   if (imu_krooz1.mpu_status == Krooz1StatusDataReady && (imu_krooz1.mpu_trans.status == I2CTransSuccess || imu_krooz1.mpu_trans.status == I2CTransFailed)) {
 	  imu_krooz1.mpu_trans.type = I2CTransTxRx;
-    imu_krooz1.mpu_trans.slave_addr = MPU60X0_ADDR_ALT;
+    imu_krooz1.mpu_trans.slave_addr = MPU60X0_I2C_ADDR;
 		imu_krooz1.mpu_trans.buf[0] = MPU60X0_REG_ACCEL_XOUT_H;
 		imu_krooz1.mpu_trans.len_w = 1;
     imu_krooz1.mpu_trans.len_r = 14;

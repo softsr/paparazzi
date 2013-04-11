@@ -73,8 +73,8 @@
 #define ActuatorsDefaultInit() ActuatorsPwmInit()
 #define ActuatorsDefaultCommit() ActuatorsPwmCommit()
 
-//#define DefaultVoltageOfAdc(adc) (0.00625*adc)
-#define DefaultVoltageOfAdc(adc) (0.006185*adc)
+//#define DefaultVoltageOfAdc(adc) (0.006185*adc)
+#define DefaultVoltageOfAdc(adc) (0.008874*adc)
 
 /* Onboard ADCs */
 /*
