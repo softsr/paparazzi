@@ -924,7 +924,7 @@ void i2c1_hw_init(void) {
 #elif defined(STM32F4)
 	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPBEN);
   gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, i2c1.scl_pin | i2c1.sda_pin);
-	gpio_set_output_options(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_25MHZ, i2c1.scl_pin | i2c1.sda_pin);
+	gpio_set_output_options(GPIOB, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, i2c1.scl_pin | i2c1.sda_pin);
 	gpio_set_af(GPIOB, GPIO_AF4, i2c1.scl_pin | i2c1.sda_pin);
 #endif
 
