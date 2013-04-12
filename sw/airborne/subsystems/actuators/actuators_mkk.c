@@ -62,9 +62,10 @@ void actuators_mkk_set(void) {
     else actuators_delay_done = TRUE;
   }
 #endif
-
+  
   static uint8_t last_idx = ACTUATORS_MKK_NB;
   uint8_t cur_idx = last_idx;
+  actuators_mkk_init();
   for (uint8_t i=0; i<ACTUATORS_MKK_NB; i++) {
 #ifdef KILL_MOTORS
     actuators_mkk.trans[i].buf[0] = 0;

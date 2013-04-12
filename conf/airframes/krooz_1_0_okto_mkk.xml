@@ -48,7 +48,7 @@
       <define name="TILT_AREA" value="380"/>
       <define name="TILT_DOWN" value="1700"/>
     </load>
-    </modules>
+  </modules>
 	
   <commands>
     <axis name="ROLL"   failsafe_value="0"/>
