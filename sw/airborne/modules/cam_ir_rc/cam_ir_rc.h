@@ -26,12 +26,54 @@
 
 #include "generated/airframe.h"
 #include "std.h"
-//#include "led.h"
+#include "led_hw.h"
+
+#ifndef IR_PORT
+#define IR_PORT   B
+#endif
+#ifndef IR_PIN
+#define IR_PIN    6
+#endif
+
+#if ARCH==lpc21
+
+#endif
+
+#if ARCH==stm32
+#include <libopencm3/stm32/f4/rcc.h>
+#include <libopencm3/stm32/f4/gpio.h>
+#include <libopencm3/stm32/f4/nvic.h>
+
+#define _IR_GPIO_RCC(_port)     RCC_AHB1ENR_IOP ## _port ## EN
+#define IR_GPIO_RCC(_port)      _IR_GPIO_RCC(_port)
+#define _IR_GPIO_PORT(_port)     GPIO ## _port
+#define IR_GPIO_PORT(_port)     _IR_GPIO_PORT(_port)
+#define _IR_GPIO_PIN(_pin)       GPIO ## _pin
+#define IR_GPIO_PIN(_pin)       _IR_GPIO_PIN(_pin)
+
+#define IR_PORT_INIT() {                                                                                      \
+  rcc_peripheral_enable_clock(&RCC_AHB1ENR, IR_GPIO_RCC(IR_PORT));                                            \
+  gpio_mode_setup(IR_GPIO_PORT(IR_PORT), GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, IR_GPIO_PIN(IR_PIN));              \
+	gpio_set_output_options(IR_GPIO_PORT(IR_PORT), GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, IR_GPIO_PIN(IR_PIN));       \
+  }
+
+#define IR_LED_ON() gpio_set(IR_GPIO_PORT(IR_PORT), IR_GPIO_PIN(IR_PIN))
+#define IR_LED_OFF() gpio_clear(IR_GPIO_PORT(IR_PORT), IR_GPIO_PIN(IR_PIN))
+#define IR_LED_TOGGLE() gpio_toggle(IR_GPIO_PORT(IR_PORT), IR_GPIO_PIN(IR_PIN))
+#define IR_LED_GET() gpio_get(IR_GPIO_PORT(IR_PORT), IR_GPIO_PIN(IR_PIN))
+
+#endif
+
+#define NEX_ADDR       0x1E3A
+#define NEX_SHOT       0x2D
+#define NEX_SHOT2S     0x37
+#define NEX_VIDEO      0x48
 
 extern void cam_ir_rc_init(void);
-extern void cam_ir_rc_periodic(void);
 //extern void cam_ir_rc_periodic(void);
 extern void cam_ir_rc_event(void);
+
+extern uint8_t ir_shot;
 
 #endif /* CAM_IR_RC_H */
 
