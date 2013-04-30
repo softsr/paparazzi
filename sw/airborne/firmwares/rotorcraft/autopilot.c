@@ -222,7 +222,7 @@ void autopilot_set_mode(uint8_t new_autopilot_mode) {
 #define AP_IN_FLIGHT_MIN_SPEED SPEED_BFP_OF_REAL(0.2)
 #endif
 #ifndef AP_IN_FLIGHT_MIN_ACCEL
-#define AP_IN_FLIGHT_MIN_ACCEL ACCEL_BFP_OF_REAL(1.5)
+#define AP_IN_FLIGHT_MIN_ACCEL ACCEL_BFP_OF_REAL(2.0)
 #endif
 
 static inline void autopilot_check_in_flight( bool_t motors_on ) {

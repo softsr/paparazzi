@@ -66,7 +66,7 @@ def main():
         sensor_ref = 9.81
         sensor_res = 10
         noise_window = 20;
-        noise_threshold = 40;
+        noise_threshold = 1000;
     elif options.sensor == "MAG":
         sensor_ref = 1.
         sensor_res = 11

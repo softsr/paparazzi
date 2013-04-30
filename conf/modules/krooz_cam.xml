@@ -13,6 +13,7 @@
     <file name="krooz_cam.c"/>
     <file name="cam_power.c"/>
 		<define name="USE_SERVOS_9AND10" value="1"/>
+    <define name="SERVO_HZ" value="400"/>
     <define name="USE_CAM" value="1"/>
     <define name="VIDEO" value="1"/>
   </makefile>

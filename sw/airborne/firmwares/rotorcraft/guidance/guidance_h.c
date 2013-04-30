@@ -365,8 +365,8 @@ static inline void guidance_h_traj_run(bool_t in_flight) {
 
   if(guidance_h_mode != GUIDANCE_H_MODE_NAV) {
     /* Add RC roll and pitch setpoints for emergency corrections */
-    guidance_h_command_body.phi += guidance_h_rc_sp.phi;
-    guidance_h_command_body.theta += guidance_h_rc_sp.theta;
+    //guidance_h_command_body.phi += guidance_h_rc_sp.phi;
+    //guidance_h_command_body.theta += guidance_h_rc_sp.theta;
   }
 
   /* Set attitude setpoint in eulers and as quaternion */

@@ -196,7 +196,10 @@ STATIC_INLINE void failsafe_check( void ) {
       autopilot_mode != AP_MODE_KILL &&
       autopilot_mode != AP_MODE_NAV)
   {
-    autopilot_set_mode(AP_MODE_FAILSAFE);
+    if(GpsIsLost())
+      autopilot_set_mode(AP_MODE_FAILSAFE);
+    else
+      autopilot_set_mode(AP_MODE_NAV);
   }
 
 #if USE_GPS

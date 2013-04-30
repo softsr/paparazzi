@@ -127,9 +127,12 @@ void actuators_pwm_arch_init(void) {
 	  GPIO_TIM3_FR_CH4);
 #elif defined(STM32F4)
 #ifdef BOARD_KROOZ
-	rcc_peripheral_enable_clock(&RCC_AHB1ENR, PWM_1_4_RCC_IOP);
-	gpio_mode_setup(PWM_1_4_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PWM_1_4_Pins);
-	gpio_set_af(PWM_1_4_GPIO, GPIO_AF2, PWM_1_4_Pins);
+	rcc_peripheral_enable_clock(&RCC_AHB1ENR, PWM_1AND4_RCC_IOP);
+  rcc_peripheral_enable_clock(&RCC_AHB1ENR, PWM_2AND3_RCC_IOP);
+	gpio_mode_setup(PWM_1AND4_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PWM_1AND4_Pins);
+  gpio_mode_setup(PWM_2AND3_GPIO, GPIO_MODE_AF, GPIO_PUPD_NONE, PWM_2AND3_Pins);
+	gpio_set_af(PWM_1AND4_GPIO, GPIO_AF2, PWM_1AND4_Pins);
+  gpio_set_af(PWM_2AND3_GPIO, GPIO_AF2, PWM_2AND3_Pins);
 #endif
 #endif
 
@@ -462,22 +465,22 @@ void actuators_pwm_commit(void) {
 #endif
 #else
 #if USE_SERVOS_1TIL4
-  timer_set_oc_value(TIM3, TIM_OC1, actuators_pwm_values[0]);
-  timer_set_oc_value(TIM3, TIM_OC2, actuators_pwm_values[1]);
-  timer_set_oc_value(TIM3, TIM_OC3, actuators_pwm_values[2]);
-  timer_set_oc_value(TIM3, TIM_OC4, actuators_pwm_values[3]);
+  timer_set_oc_value(PWM_1_4_TIMER, PWM1_OC, actuators_pwm_values[0]);
+  timer_set_oc_value(PWM_1_4_TIMER, PWM2_OC, actuators_pwm_values[1]);
+  timer_set_oc_value(PWM_1_4_TIMER, PWM3_OC, actuators_pwm_values[2]);
+  timer_set_oc_value(PWM_1_4_TIMER, PWM4_OC, actuators_pwm_values[3]);
 #endif
 #if USE_SERVOS_5AND6
-  timer_set_oc_value(TIM4, TIM_OC1, actuators_pwm_values[4]);
-  timer_set_oc_value(TIM4, TIM_OC2, actuators_pwm_values[5]);
+  timer_set_oc_value(PWM_5AND6_TIMER, PWM5_OC, actuators_pwm_values[4]);
+  timer_set_oc_value(PWM_5AND6_TIMER, PWM6_OC, actuators_pwm_values[5]);
 #endif
 #if USE_SERVOS_7AND8
-  timer_set_oc_value(TIM5, TIM_OC1, actuators_pwm_values[6]);
-  timer_set_oc_value(TIM5, TIM_OC2, actuators_pwm_values[7]);
+  timer_set_oc_value(PWM_7AND8_TIMER, PWM7_OC, actuators_pwm_values[6]);
+  timer_set_oc_value(PWM_7AND8_TIMER, PWM8_OC, actuators_pwm_values[7]);
 #endif
 #if USE_SERVOS_9AND10
-  timer_set_oc_value(TIM5, TIM_OC3, actuators_pwm_values[8]);
-  timer_set_oc_value(TIM5, TIM_OC4, actuators_pwm_values[9]);
+  timer_set_oc_value(PWM_9AND10_TIMER, PWM9_OC, actuators_pwm_values[8]);
+  timer_set_oc_value(PWM_9AND10_TIMER, PWM10_OC, actuators_pwm_values[9]);
 #endif
 #endif
 

@@ -31,7 +31,10 @@
 
 //#include "led.h"
 
+#if IMU_KROOZ_SD
 #define KROOZ_SD
+#define IMU_KROOZ_UPSD 0
+#endif
 
 #ifndef KROOZ_SD
 #define MPU60X0_I2C_ADDR MPU60X0_ADDR_ALT
@@ -41,21 +44,43 @@
 
 #ifdef IMU_KROOZ_VERSION_1_0
 #if !defined IMU_MAG_X_SIGN & !defined IMU_MAG_Y_SIGN & !defined IMU_MAG_Z_SIGN
+#if IMU_KROOZ_UPSD
+#define IMU_MAG_X_SIGN  1
+#define IMU_MAG_Y_SIGN -1
+#define IMU_MAG_Z_SIGN -1
+#else
 #define IMU_MAG_X_SIGN  1
 #define IMU_MAG_Y_SIGN  1
 #define IMU_MAG_Z_SIGN  1
 #endif
 #endif
+#endif
+
+#if IMU_KROOZ_UPSD
+#pragma message "Using Krooz upside down mounting"
+#endif
 
 #if !defined IMU_GYRO_P_SIGN & !defined IMU_GYRO_Q_SIGN & !defined IMU_GYRO_R_SIGN
+#if IMU_KROOZ_UPSD
+#define IMU_GYRO_P_SIGN   1
+#define IMU_GYRO_Q_SIGN   1
+#define IMU_GYRO_R_SIGN  -1
+#else
 #define IMU_GYRO_P_SIGN  -1
 #define IMU_GYRO_Q_SIGN   1
 #define IMU_GYRO_R_SIGN   1
 #endif
+#endif
 #if !defined IMU_ACCEL_X_SIGN & !defined IMU_ACCEL_Y_SIGN & !defined IMU_ACCEL_Z_SIGN
+#if IMU_KROOZ_UPSD
+#define IMU_ACCEL_X_SIGN  1
+#define IMU_ACCEL_Y_SIGN  1
+#define IMU_ACCEL_Z_SIGN -1
+#else
 #define IMU_ACCEL_X_SIGN -1
 #define IMU_ACCEL_Y_SIGN  1
 #define IMU_ACCEL_Z_SIGN  1
+#endif
 #endif
 
 /** default gyro sensitivy and neutral from the datasheet
