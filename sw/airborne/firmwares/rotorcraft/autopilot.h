@@ -36,6 +36,11 @@
 #include "generated/airframe.h"
 #include "subsystems/ins.h"
 
+#include "messages.h"
+#include "mcu_periph/uart.h"
+
+#include "subsystems/datalink/downlink.h"
+
 #define AP_MODE_FAILSAFE          0
 #define AP_MODE_KILL              1
 #define AP_MODE_RATE_DIRECT       2
@@ -142,13 +147,17 @@ extern uint16_t autopilot_flight_time;
 /** Ground detection based on accelerometers.
  */
 #ifndef THRESHOLD_GROUND_DETECT
-#define THRESHOLD_GROUND_DETECT ACCEL_BFP_OF_REAL(15.)
+#define THRESHOLD_GROUND_DETECT ACCEL_BFP_OF_REAL(6.)
 #endif
 static inline void DetectGroundEvent(void) {
   if (autopilot_mode == AP_MODE_FAILSAFE || autopilot_detect_ground_once) {
     struct NedCoor_i* accel = stateGetAccelNed_i();
-    if (accel->z < -THRESHOLD_GROUND_DETECT ||
-        accel->z > THRESHOLD_GROUND_DETECT) {
+    if ((accel->z < -THRESHOLD_GROUND_DETECT ||
+        accel->z > THRESHOLD_GROUND_DETECT)
+#ifdef USE_SONAR
+        && sonar_meas != 0 && sonar_meas < 100
+#endif
+        ) {
       autopilot_detect_ground = TRUE;
       autopilot_detect_ground_once = FALSE;
     }

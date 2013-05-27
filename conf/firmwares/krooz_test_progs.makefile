@@ -134,8 +134,7 @@ test_servos.srcs    = $(COMMON_TEST_SRCS)
 test_servos.CFLAGS  += -I$(SRC_FIRMWARE)/actuators/arch/$(ARCH_DIR) -I$(SRC_DIR)
 test_servos.LDFLAGS += -lm
 test_servos.srcs    += $(SRC_DIR)/test_servos.c
-test_servos.srcs    += $(SRC_FIRMWARE)/actuators/actuators_pwm.c
-test_servos.srcs    += $(SRC_FIRMWARE)/actuators/arch/$(ARCH_DIR)/actuators_pwm_arch.c
+test_servos.srcs    += $(SRC_ARCH)/subsystems/actuators/actuators_pwm_arch.c
 test_servos.CFLAGS += -DUSE_SERVOS_5AND6 -DUSE_SERVOS_7AND8 -DUSE_SERVOS_9AND10 -DUSE_SERVO_11
 
 
@@ -472,9 +471,13 @@ test_esc_mkk_simple.CFLAGS += $(COMMON_TELEMETRY_CFLAGS)
 test_esc_mkk_simple.srcs   += $(COMMON_TELEMETRY_SRCS)
 
 test_esc_mkk_simple.srcs   += test/test_esc_mkk_simple.c
-test_esc_mkk_simple.CFLAGS += -DUSE_I2C2
+test_esc_mkk_simple.CFLAGS += -DUSE_I2C1
+test_esc_mkk_simple.CFLAGS += -DI2C_TRANSACTION_QUEUE_LEN=12
+test_esc_mkk_simple.CFLAGS += -DI2C1_CLOCK_SPEED=42000
 test_esc_mkk_simple.srcs   += mcu_periph/i2c.c $(SRC_ARCH)/mcu_periph/i2c_arch.c
-test_esc_mkk_simple.CFLAGS += -DACTUATORS_MKK_DEV=i2c2
+test_esc_mkk_simple.srcs   += subsystems/actuators/actuators_mkk.c
+test_esc_mkk_simple.srcs   += subsystems/actuators.c
+test_esc_mkk_simple.CFLAGS += -DACTUATORS_MKK_DEVICE=i2c1
 
 
 #

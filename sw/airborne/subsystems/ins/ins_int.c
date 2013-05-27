@@ -162,13 +162,12 @@ void ins_propagate() {
 #endif /* USE_VFF */
 
 #if USE_HFF
-  /* propagate horizontal filter */
-  b2_hff_propagate();
-#else
-  ins_ltp_accel.x = accel_meas_ltp.x;
-  ins_ltp_accel.y = accel_meas_ltp.y;
-#endif /* USE_HFF */
-
+    /* propagate horizontal filter */
+    b2_hff_propagate();
+#else /* USE_HFF */
+    ins_ltp_accel.x = accel_meas_ltp.x;
+    ins_ltp_accel.y = accel_meas_ltp.y;
+#endif
   INS_NED_TO_STATE();
 }
 
@@ -216,7 +215,8 @@ void ins_update_gps(void) {
     if(gps_init_cnt == 0)
       gps_init_cnt = cpu_time_sec;
     if (!ins_ltp_initialised) {
-      if(gps.ecef_pos.x != 0 && gps.ecef_pos.x != 0 && gps.ecef_pos.x != 0  && (cpu_time_sec > gps_init_cnt + GPS_INIT_TIME)) {	
+      if(gps.ecef_pos.x != 0 && gps.ecef_pos.x != 0 && gps.ecef_pos.x != 0  
+         && ((cpu_time_sec > gps_init_cnt + GPS_INIT_TIME) || (GpsValidPosAcc() && (cpu_time_sec > gps_init_cnt + GPS_INIT_TIME/3)))) {
         struct LlaCoor_i llh;
         llh.lat = INT32_RAD_OF_DEG(NAV_LAT0);
         llh.lon = INT32_RAD_OF_DEG(NAV_LON0);

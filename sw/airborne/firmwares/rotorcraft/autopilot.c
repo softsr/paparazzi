@@ -101,7 +101,10 @@ void autopilot_periodic(void) {
 
   RunOnceEvery(NAV_PRESCALER, nav_periodic_task());
 #ifdef FAILSAFE_GROUND_DETECT
-  if (autopilot_mode == AP_MODE_FAILSAFE && autopilot_detect_ground) {
+  if ((autopilot_mode == AP_MODE_FAILSAFE
+      || autopilot_mode == AP_MODE_HOVER_Z_HOLD
+      || autopilot_mode == AP_MODE_NAV) 
+      && autopilot_detect_ground) {
     autopilot_set_mode(AP_MODE_KILL);
     autopilot_detect_ground = FALSE;
   }
@@ -236,7 +239,7 @@ static inline void autopilot_check_in_flight( bool_t motors_on ) {
     if (autopilot_in_flight_counter > 0) {
       if (THROTTLE_STICK_DOWN() && ((autopilot_mode == AP_MODE_HOVER_Z_HOLD
                                      && (abs(ins_ltp_speed.z) < AP_IN_FLIGHT_MIN_SPEED)
-                                     && (((accel_filter*5 + abs(ins_ltp_accel.z))/6) < AP_IN_FLIGHT_MIN_ACCEL))
+                                     && (((accel_filter*9 + abs(ins_ltp_accel.z))/10) < AP_IN_FLIGHT_MIN_ACCEL))
                                    || (autopilot_mode != AP_MODE_NAV && autopilot_mode != AP_MODE_HOVER_Z_HOLD))) {
         autopilot_in_flight_counter--;
         if (autopilot_in_flight_counter == 0) {
@@ -265,6 +268,12 @@ static inline void autopilot_check_in_flight( bool_t motors_on ) {
   }
 }
 
+static inline void autopilot_check_ground_detect_on( bool_t motors_on ) {
+  if(autopilot_mode == AP_MODE_HOVER_Z_HOLD && THROTTLE_STICK_DOWN() && !autopilot_detect_ground_once && stateGetPositionEnu_f()->z < 3.0 && motors_on)
+    autopilot_detect_ground_once = TRUE;
+  else
+    autopilot_detect_ground_once = FALSE;
+}
 
 void autopilot_set_motors_on(bool_t motors_on) {
   if (ahrs_is_aligned() && motors_on)
@@ -312,6 +321,8 @@ void autopilot_on_rc_frame(void) {
     autopilot_block_switch_check(autopilot_in_flight);
 #endif
 
+    autopilot_check_ground_detect_on(autopilot_in_flight);
+    
     guidance_v_read_rc();
     guidance_h_read_rc(autopilot_in_flight);
   }

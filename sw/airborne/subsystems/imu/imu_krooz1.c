@@ -52,6 +52,9 @@ uint32_t tick_last = 0;
 
 struct ImuKrooz1 imu_krooz1;
 bool_t periodic_flag;
+#if IMU_USE_MEDIAN_FILTER
+struct MedianFilter3Int median_gyro, median_accel, median_mag;
+#endif
 
 #if defined(STM32F1) || defined(STM32F2)
 extern void exti9_5_irq_handler(void);
@@ -134,6 +137,12 @@ void imu_impl_init(void) {
 	imu_krooz1.mag_status = Krooz1StatusUninit;
 	periodic_flag = FALSE;
 	krooz_init_hw();
+#if IMU_USE_MEDIAN_FILTER
+  // Init median filters
+  InitMedianFilterRatesInt(median_gyro,  IMU_GYRO_FILTER_COEFF);
+  InitMedianFilterVect3Int(median_accel, IMU_ACCEL_FILTER_COEFF);
+  InitMedianFilterVect3Int(median_mag,   IMU_MAG_FILTER_COEFF);
+#endif
 }
 
 #define I2CSetReg(_i2c_reg, _i2c_addr, _reg, _data, _status) { \
@@ -166,12 +175,14 @@ static inline void mpu_config(void) {
         I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_SMPLRT_DIV, data, imu_krooz1.mpu_status);
 		  break;
 		  case 3:
-		    data = (3 << 3);				// -2000deg/sec	
+        data = (0 << 3);				// -250deg/sec
+		    //data = (3 << 3);				// -2000deg/sec	
         I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_GYRO_CONFIG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 4:
 		    data = (0 << 0) |			// No HPFL
-			  			 (3 << 3);			// Full Scale = 16g
+               (0 << 3);			// Low Scale = 2g
+			  			 //(3 << 3);			// Full Scale = 16g
         I2CSetReg(imu_krooz1.mpu_trans, MPU60X0_I2C_ADDR, MPU60X0_REG_ACCEL_CONFIG, data, imu_krooz1.mpu_status);
 		  break;
 		  case 5:
@@ -201,7 +212,8 @@ static inline void mag_config(void) {
 			//LED_ON(2)
 		  break;
 		  case 1:
-			  data = 0x01<<5;  // set to gain to 1 Gauss
+			  data = 0x00<<5;  // set to gain to 0.88 Gauss
+        //data = 0x01<<5;  // set to gain to 1.3 Gauss
         I2CSetReg(imu_krooz1.mag_trans, HMC5843_ADDR, HMC5843_REG_CFGB, data, imu_krooz1.mag_status);
 		  break;
 			case 2:

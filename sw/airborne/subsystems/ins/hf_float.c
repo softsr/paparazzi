@@ -62,7 +62,7 @@
 #define HFF_R_POS   8.
 #endif
 #ifndef HFF_R_POS_MIN
-#define HFF_R_POS_MIN 3.
+#define HFF_R_POS_MIN 2.
 #endif
 
 #ifndef HFF_R_SPEED

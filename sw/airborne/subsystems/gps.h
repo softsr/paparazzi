@@ -41,8 +41,10 @@
 #define GPS_FIX_2D   0x02
 #define GPS_FIX_3D   0x03
 
+#define VALID_POS_ACC		500
 #define GpsFixValid() (gps.fix == GPS_FIX_3D)
-#define GPS_INIT_TIME   5
+#define GpsValidPosAcc()	(gps.pacc < VALID_POS_ACC)
+#define GPS_INIT_TIME   300
 
 #ifndef GPS_NB_CHANNELS
 #define GPS_NB_CHANNELS 1

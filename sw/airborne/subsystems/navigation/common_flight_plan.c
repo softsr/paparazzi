@@ -32,6 +32,9 @@
 /** In s */
 uint16_t stage_time, block_time;
 
+bool_t stage_complete = TRUE;
+int32_t cur_wp = 0;
+
 uint8_t nav_stage, nav_block;
 
 /** To save the current block/stage to enable return */

@@ -60,6 +60,14 @@ static inline void ahrs_update_mag_2d(void);
 #define AHRS_PROPAGATE_FREQUENCY PERIODIC_FREQUENCY
 #endif
 
+#ifndef AHRS_WEIGHT_MAX
+#define AHRS_WEIGHT_MAX   350
+#endif
+
+#ifndef AHRS_MAG_RATE_COEFF
+#define AHRS_MAG_RATE_COEFF   12
+#endif
+
 struct AhrsIntCmpl ahrs_impl;
 
 #ifdef AHRS_UPDATE_FW_ESTIMATOR
@@ -75,7 +83,6 @@ float ins_pitch_neutral = INS_PITCH_NEUTRAL_DEFAULT;
 #endif
 
 static inline void set_body_state_from_quat(void);
-
 
 void ahrs_init(void) {
 
@@ -144,7 +151,7 @@ void ahrs_propagate(void) {
 
   /* low pass rate */
 #ifdef AHRS_PROPAGATE_LOW_PASS_RATES
-  RATES_SMUL(ahrs_impl.imu_rate, ahrs_impl.imu_rate,2);
+  RATES_SMUL(ahrs_impl.imu_rate, ahrs_impl.imu_rate, 2);
   RATES_ADD(ahrs_impl.imu_rate, omega);
   RATES_SDIV(ahrs_impl.imu_rate, ahrs_impl.imu_rate, 3);
 #else
@@ -213,17 +220,10 @@ void ahrs_update_accel(void) {
   int32_t inv_weight;
   if (ahrs_impl.use_gravity_heuristic) {
     /* heuristic on acceleration norm */
-
-    /* FIR filtered pseudo_gravity_measurement */
-    static struct Int32Vect3 filtered_gravity_measurement = {0, 0, 0};
-    VECT3_SMUL(filtered_gravity_measurement, filtered_gravity_measurement, 7);
-    VECT3_ADD(filtered_gravity_measurement, pseudo_gravity_measurement);
-    VECT3_SDIV(filtered_gravity_measurement, filtered_gravity_measurement, 8);
-
     int32_t acc_norm;
-    INT32_VECT3_NORM(acc_norm, filtered_gravity_measurement);
+    INT32_VECT3_NORM(acc_norm, pseudo_gravity_measurement);
     const int32_t acc_norm_d = ABS(ACCEL_BFP_OF_REAL(9.81)-acc_norm);
-    inv_weight = Chop(50*acc_norm_d/ACCEL_BFP_OF_REAL(9.81), 1, 50);
+    inv_weight = Chop(AHRS_WEIGHT_MAX*acc_norm_d/ACCEL_BFP_OF_REAL(9.81), 10, AHRS_WEIGHT_MAX);
   }
   else {
     inv_weight = 1;
@@ -232,9 +232,9 @@ void ahrs_update_accel(void) {
   // residual FRAC : ACCEL_FRAC + TRIG_FRAC = 10 + 14 = 24
   // rate_correction FRAC = RATE_FRAC = 12
   // 2^12 / 2^24 * 5e-2 = 1/81920
-  ahrs_impl.rate_correction.p += -residual.x/82000/inv_weight;
-  ahrs_impl.rate_correction.q += -residual.y/82000/inv_weight;
-  ahrs_impl.rate_correction.r += -residual.z/82000/inv_weight;
+  ahrs_impl.rate_correction.p += -residual.x/8200/inv_weight;
+  ahrs_impl.rate_correction.q += -residual.y/8200/inv_weight;
+  ahrs_impl.rate_correction.r += -residual.z/8200/inv_weight;
 
   // residual FRAC = ACCEL_FRAC + TRIG_FRAC = 10 + 14 = 24
   // high_rez_bias = RATE_FRAC+28 = 40
@@ -244,9 +244,9 @@ void ahrs_update_accel(void) {
   //  ahrs_impl.high_rez_bias.q += residual.y*3;
   //  ahrs_impl.high_rez_bias.r += residual.z*3;
 
-  ahrs_impl.high_rez_bias.p += residual.x/(2*inv_weight);
-  ahrs_impl.high_rez_bias.q += residual.y/(2*inv_weight);
-  ahrs_impl.high_rez_bias.r += residual.z/(2*inv_weight);
+  ahrs_impl.high_rez_bias.p += residual.x*10/(2*inv_weight);
+  ahrs_impl.high_rez_bias.q += residual.y*10/(2*inv_weight);
+  ahrs_impl.high_rez_bias.r += residual.z*10/(2*inv_weight);
 
 
   /*                        */
@@ -313,15 +313,9 @@ static inline void ahrs_update_mag_2d(void) {
   //  ahrs_impl.rate_correction.q += residual_imu.y*(1<<5)/410;
   //  ahrs_impl.rate_correction.r += residual_imu.z*(1<<5)/410;
 
-#ifdef AHRS_MAG_RATE_COEFF
     ahrs_impl.rate_correction.p += residual_imu.x*AHRS_MAG_RATE_COEFF/16;
     ahrs_impl.rate_correction.q += residual_imu.y*AHRS_MAG_RATE_COEFF/16;
     ahrs_impl.rate_correction.r += residual_imu.z*AHRS_MAG_RATE_COEFF/16;
-#else
-  ahrs_impl.rate_correction.p += residual_imu.x/16;
-  ahrs_impl.rate_correction.q += residual_imu.y/16;
-  ahrs_impl.rate_correction.r += residual_imu.z/16;
-#endif
 
   // residual_ltp FRAC = 2 * MAG_FRAC = 22
   // high_rez_bias = RATE_FRAC+28 = 40

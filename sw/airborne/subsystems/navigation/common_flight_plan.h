@@ -32,6 +32,9 @@
 /** In s */
 extern uint16_t stage_time, block_time;
 
+extern bool_t stage_complete;
+extern int32_t cur_wp;
+
 extern uint8_t nav_stage, nav_block;
 extern uint8_t last_block, last_stage;
 extern uint8_t rc_command;
@@ -55,7 +58,7 @@ void nav_goto_block(uint8_t block_id);
 
 #define Block(x) case x: nav_block=x;
 #define NextBlock() { nav_block++; nav_init_block(); }
-#define GotoBlock(b) { nav_block=b; nav_init_block(); }
+#define GotoBlock(b) { nav_block=b; nav_init_block(); stage_complete = TRUE; rc_command = 0;}
 
 #define Stage(s) case s: nav_stage=s;
 #define NextStageAndBreak() { nav_stage++; InitStage(); break; }

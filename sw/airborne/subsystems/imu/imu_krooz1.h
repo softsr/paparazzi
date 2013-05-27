@@ -28,6 +28,9 @@
 #include "peripherals/hmc5843.h"
 #include "peripherals/mpu60X0.h"
 #include "math/pprz_algebra.h"
+#if IMU_USE_MEDIAN_FILTER
+#include "filters/median_filter.h"
+#endif
 
 //#include "led.h"
 
@@ -127,6 +130,16 @@
 #define IMU_ACCEL_Z_NEUTRAL 0
 #endif
 
+#ifndef IMU_GYRO_FILTER_COEFF
+#define IMU_GYRO_FILTER_COEFF       5
+#endif
+#ifndef IMU_ACCEL_FILTER_COEFF
+#define IMU_ACCEL_FILTER_COEFF      10
+#endif
+#ifndef IMU_MAG_FILTER_COEFF
+#define IMU_MAG_FILTER_COEFF        5
+#endif
+
 #define Krooz1StatusUninit      0x00
 #define Krooz1StatusIdle        0x20
 #define Krooz1StatusDataReady   0xF0
@@ -140,10 +153,13 @@ struct ImuKrooz1 {
 	struct Int32Vect3 accel_sum;
 	struct Int32Rates gyro_sum;
 	volatile uint8_t  meas_nb;
+  struct Int32Vect3 accel_filtered;
+  struct Int32Rates gyro_filtered;
 };
 
 extern struct ImuKrooz1 imu_krooz1;
 extern bool_t periodic_flag;
+extern struct MedianFilter3Int median_gyro, median_accel, median_mag;
 
 static inline void mpu_read(void) {
 
@@ -209,6 +225,9 @@ static inline uint8_t mag_read(void) {
 #else
   VECT3_ASSIGN(imu.mag_unscaled, mz, -mx, my);
 #endif
+#if IMU_USE_MEDIAN_FILTER
+  UpdateMedianFilterVect3Int(median_mag, imu.mag_unscaled);
+#endif
   imu_krooz1.mag_status = Krooz1StatusIdle;
   return 1;
 }
@@ -231,6 +250,20 @@ static inline void imu_krooz1_event(void (* _gyro_handler)(void), void (* _accel
     RATES_ASSIGN(imu.gyro_unscaled, imu_krooz1.gyro_sum.q / imu_krooz1.meas_nb, imu_krooz1.gyro_sum.p / imu_krooz1.meas_nb, imu_krooz1.gyro_sum.r / imu_krooz1.meas_nb);
     VECT3_ASSIGN(imu.accel_unscaled, imu_krooz1.accel_sum.y / imu_krooz1.meas_nb, imu_krooz1.accel_sum.x / imu_krooz1.meas_nb, imu_krooz1.accel_sum.z / imu_krooz1.meas_nb);
   #endif
+  #if IMU_USE_MEDIAN_FILTER
+    UpdateMedianFilterRatesInt(median_gyro, imu.gyro_unscaled);
+    UpdateMedianFilterVect3Int(median_accel, imu.accel_unscaled);
+  #endif
+    RATES_SMUL(imu_krooz1.gyro_filtered, imu_krooz1.gyro_filtered, IMU_GYRO_FILTER_COEFF);
+    RATES_ADD(imu_krooz1.gyro_filtered, imu.gyro_unscaled);
+    RATES_SDIV(imu_krooz1.gyro_filtered, imu_krooz1.gyro_filtered, (IMU_GYRO_FILTER_COEFF + 1));
+    RATES_COPY(imu.gyro_unscaled, imu_krooz1.gyro_filtered);
+    
+    VECT3_SMUL(imu_krooz1.accel_filtered, imu_krooz1.accel_filtered, IMU_ACCEL_FILTER_COEFF);
+    VECT3_ADD(imu_krooz1.accel_filtered, imu.accel_unscaled);
+    VECT3_SDIV(imu_krooz1.accel_filtered, imu_krooz1.accel_filtered, (IMU_ACCEL_FILTER_COEFF + 1));
+    VECT3_COPY(imu.accel_unscaled, imu_krooz1.accel_filtered);
+    
 	  INT_RATES_ZERO(imu_krooz1.gyro_sum);
 		INT_VECT3_ZERO(imu_krooz1.accel_sum);
 		imu_krooz1.meas_nb = 0;
