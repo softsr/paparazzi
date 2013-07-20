@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007  ENAC
+ * Copyright (C) 2013 Chris
  *
  * This file is part of paparazzi.
  *
@@ -20,19 +20,16 @@
  *
  */
 
-/** \file
- *  \brief
- *
- */
+#ifndef MAX7456_H
+#define MAX7456_H
 
 #include "std.h"
 
-extern uint8_t buf_input[3];
-extern uint8_t buf_output[3];
+extern void max7456_init(void);
+extern void max7456_periodic(void);
+extern void max7456_event(void);
 
-extern bool_t sd_card_available;
+extern uint8_t osd_enable;
 
-extern void sd_card_init(void);
-extern void sd_card_periodic(void);
-extern void sd_card_event(void);
 
+#endif //MAX7456_H
