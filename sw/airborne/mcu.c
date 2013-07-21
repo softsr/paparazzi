@@ -63,7 +63,9 @@ void mcu_init(void) {
   mcu_arch_init();
 
 #ifdef PERIPHERALS_AUTO_INIT
+#if (FIRMWARE != RTOS)
   sys_time_init();
+#endif
 #ifdef USE_LED
   led_init();
 #endif
