@@ -91,19 +91,20 @@ ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_1.c
 
 ap.srcs    += $(SRC_FIRMWARE)/ParTest.c
 ap.srcs    += $(SRC_FIRMWARE)/main_full.c
-ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/flash.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/flash.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/integer.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/flop.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/dynamic.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/BlockQ.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/blocktim.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/GenQTest.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/recmutex.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/death.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/PollQ.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Full/semtest.c
-#ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/countsem.c
+#ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/flash.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/flash.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/integer.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/flop.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/dynamic.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/BlockQ.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/blocktim.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/GenQTest.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/recmutex.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/death.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/PollQ.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/semtest.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Minimal/countsem.c
+ap.srcs    += $(SRC_FIRMWARE)/src/Full/print.c
 
 ##ifeq ($(BOARD)$(BOARD_TYPE), ardroneraw)
 ##ap.srcs   += $(SRC_BOARD)/gpio_ardrone.c

@@ -212,7 +212,7 @@ Set mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY to 0 to create a much more
 comprehensive test application.  See the comments at the top of this file, and
 the documentation page on the http://www.FreeRTOS.org web site for more
 information. */
-#define mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY		1
+#define mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY		0
 
 /*-----------------------------------------------------------*/
 
@@ -300,7 +300,7 @@ int main(void)
 	/* The following function will only create more tasks and timers if
 	mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY is set to 0 (at the top of this
 	file).  See the comments at the top of this file for more information. */
-	//prvOptionallyCreateComprehensveTestApplication();
+	prvOptionallyCreateComprehensveTestApplication();
   LED_ON(3);
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -531,7 +531,7 @@ void tim3_isr( void )
 
 	/* Fill the FPU registers with 99 to overwrite the values written by
 	TIM2_IRQHandler(). */
-	//vRegTestClearFlopRegistersToParameterValue( 99UL );
+	vRegTestClearFlopRegistersToParameterValue( 99UL );
 	
 	ulFPUInterruptNesting--;
 }
@@ -544,7 +544,7 @@ void tim2_isr(void)
 	ulFPUInterruptNesting++;
 	
 	/* Fill the FPU registers with 1. */
-	//vRegTestClearFlopRegistersToParameterValue( 1UL );
+	vRegTestClearFlopRegistersToParameterValue( 1UL );
 	
 	/* Trigger a timer 3 interrupt, which will fill the registers with a
 	different value. */
@@ -554,7 +554,7 @@ void tim2_isr(void)
 	/* Ensure that, after returning from the nesting interrupt, all the FPU
 	registers contain the value to which they were set by this interrupt
 	function. */
-	//configASSERT( ulRegTestCheckFlopRegistersContainParameterValue( 1UL ) );
+	configASSERT( ulRegTestCheckFlopRegistersContainParameterValue( 1UL ) );
 	
 	ulFPUInterruptNesting--;
 }
@@ -594,7 +594,7 @@ static void prvOptionallyCreateComprehensveTestApplication( void )
 		vSemaphoreCreateBinary( xTestSemaphore );
 
 		/* Create the task that is unblocked by the demonstration interrupt. */
-		xTaskCreate( prvButtonTestTask, ( signed char * ) "BtnTest", configMINIMAL_STACK_SIZE, ( void * ) NULL, tskIDLE_PRIORITY, NULL );
+		//xTaskCreate( prvButtonTestTask, ( signed char * ) "BtnTest", configMINIMAL_STACK_SIZE, ( void * ) NULL, tskIDLE_PRIORITY, NULL );
 		
 		/* Create the software timer that performs the 'check' functionality,
 		as described at the top of this file. */
@@ -612,7 +612,7 @@ static void prvOptionallyCreateComprehensveTestApplication( void )
 
 		/* This task has to be created last as it keeps account of the number of
 		tasks it expects to see running. */
-		vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
+		//vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
 	}
 	#else /* mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY */
 	{

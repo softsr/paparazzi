@@ -112,14 +112,14 @@ void vParTestSetLED( unsigned long ulLED, signed portBASE_TYPE xValue )
 		{
 			//STM_EVAL_LEDOn( xLEDs[ ulLED ] );
       switch(ulLED) {
-        case 1:
+        case 0:
         LED_ON(1);
+        break;
+        case 1:
+        LED_ON(2);
         break;
         case 2:
-        LED_ON(1);
-        break;
-        case 3:
-        LED_ON(1);
+        LED_ON(3);
         break;
         default: break;
       }
@@ -128,14 +128,14 @@ void vParTestSetLED( unsigned long ulLED, signed portBASE_TYPE xValue )
 		{
 			//STM_EVAL_LEDOff( xLEDs[ ulLED ] );
       switch(ulLED) {
-        case 1:
+        case 0:
         LED_OFF(1);
+        break;
+        case 1:
+        LED_OFF(2);
         break;
         case 2:
-        LED_OFF(1);
-        break;
-        case 3:
-        LED_OFF(1);
+        LED_OFF(3);
         break;
         default: break;
       }
@@ -152,14 +152,14 @@ void vParTestToggleLED( unsigned long ulLED )
 		{
 			//STM_EVAL_LEDToggle( xLEDs[ ulLED ] );
       switch(ulLED) {
-        case 1:
+        case 0:
         LED_TOGGLE(1);
+        break;
+        case 1:
+        LED_TOGGLE(2);
         break;
         case 2:
-        LED_TOGGLE(1);
-        break;
-        case 3:
-        LED_TOGGLE(1);
+        LED_TOGGLE(3);
         break;
         default: break;
       }

@@ -169,13 +169,13 @@ static void prvCheckTimerCallback( xTimerHandle xTimer );
  * of the FPU registers, as described at the top of this file.  The nature of
  * these files necessitates that they are written in an assembly file.
  */
-static void vRegTest1Task( void *pvParameters ) __attribute__((naked));
-static void vRegTest2Task( void *pvParameters ) __attribute__((naked));
-static void vRegTestClearFlopRegistersToParameterValue(  unsigned long ulValue ) __attribute__((naked));
-static void ulRegTestCheckFlopRegistersContainParameterValue(  unsigned long ulValue ) __attribute__((naked));
+extern void vRegTest1Task( void *pvParameters ) __attribute__((naked));
+extern void vRegTest2Task( void *pvParameters ) __attribute__((naked));
+extern void vRegTestClearFlopRegistersToParameterValue(  unsigned long ulValue ) __attribute__((naked));
+extern void ulRegTestCheckFlopRegistersContainParameterValue(  unsigned long ulValue ) __attribute__((naked));
 
 /* This is a naked function. */
-static void vRegTest1Task( void *pvParameters )
+void vRegTest1Task( void *pvParameters )
 {
 	__asm volatile
 	(
@@ -359,7 +359,7 @@ static void vRegTest1Task( void *pvParameters )
 /*-----------------------------------------------------------*/
 
 /* This is a naked function. */
-static void vRegTest2Task( void *pvParameters )
+void vRegTest2Task( void *pvParameters )
 {
 	__asm volatile
 	(
@@ -544,7 +544,7 @@ static void vRegTest2Task( void *pvParameters )
 }
 
 /* This is a naked function. */
-static void vRegTestClearFlopRegistersToParameterValue(  unsigned long ulValue )
+void vRegTestClearFlopRegistersToParameterValue(  unsigned long ulValue )
 {
 	__asm volatile
 	(
@@ -562,7 +562,7 @@ static void vRegTestClearFlopRegistersToParameterValue(  unsigned long ulValue )
 }
 
 /* This is a naked function. */
-static void ulRegTestCheckFlopRegistersContainParameterValue(  unsigned long ulValue )
+void ulRegTestCheckFlopRegistersContainParameterValue(  unsigned long ulValue )
 {
 	__asm volatile
 	(
@@ -615,11 +615,11 @@ static void ulRegTestCheckFlopRegistersContainParameterValue(  unsigned long ulV
     "   cmp r0, r1 \n"
     "   bne return_error \n"
       
-    " return_pass \n"
+    " return_pass: \n"
     "   mov r0, #1 \n"
     "   bx lr \n"
 
-    " return_error \n"
+    " return_error: \n"
     "   mov r0, #0 \n"
     "   bx lr \n"
 

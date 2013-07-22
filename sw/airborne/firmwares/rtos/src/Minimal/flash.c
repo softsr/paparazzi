@@ -97,7 +97,7 @@
 #include "flash.h"
 
 #define ledSTACK_SIZE		configMINIMAL_STACK_SIZE
-#define ledNUMBER_OF_LEDS	( 2 ) // ( 3 )
+#define ledNUMBER_OF_LEDS	( 3 )
 #define ledFLASH_RATE_BASE	( ( portTickType ) 333 )
 
 /* Variable used by the created tasks to calculate the LED number to use, and

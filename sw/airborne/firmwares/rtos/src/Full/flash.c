@@ -133,8 +133,8 @@ void vStartLEDFlashTasks( unsigned portBASE_TYPE uxPriority )
 {
 unsigned portBASE_TYPE uxLEDTask;
 xLEDParameters *pxLEDParameters;
-const unsigned portBASE_TYPE uxNumOfLEDs = 8;
-const portTickType xFlashRate = 125;
+const unsigned portBASE_TYPE uxNumOfLEDs = 3;
+const portTickType xFlashRate = 333;
 
 	/* Create the eight tasks. */
 	for( uxLEDTask = 0; uxLEDTask < uxNumOfLEDs; ++uxLEDTask )
@@ -157,7 +157,7 @@ static void vLEDFlashTask( void *pvParameters )
 xLEDParameters *pxParameters;
 
 	/* Queue a message for printing to say the task has started. */
-	vPrintDisplayMessage( &pcTaskStartMsg );
+	//vPrintDisplayMessage( &pcTaskStartMsg );
 
 	pxParameters = ( xLEDParameters * ) pvParameters;
 
