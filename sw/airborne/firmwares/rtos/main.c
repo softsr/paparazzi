@@ -612,7 +612,7 @@ static void prvOptionallyCreateComprehensveTestApplication( void )
 
 		/* This task has to be created last as it keeps account of the number of
 		tasks it expects to see running. */
-		//vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
+		vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
 	}
 	#else /* mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY */
 	{

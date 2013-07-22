@@ -87,7 +87,10 @@ ap.srcs    += $(SRC_FIRMWARE)/timers.c
 
 # STM32 port sources
 ap.srcs    += $(SRC_FIRMWARE)/portable/port.c
-ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_1.c
+#ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_1.c
+ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_2.c
+#ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_3.c
+#ap.srcs    += $(SRC_FIRMWARE)/portable/MemMang/heap_4.c
 
 ap.srcs    += $(SRC_FIRMWARE)/ParTest.c
 ap.srcs    += $(SRC_FIRMWARE)/main_full.c
