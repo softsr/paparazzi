@@ -52,4 +52,13 @@ extern void i2c2_er_irq_handler(void);
 #endif /* USE_I2C2 */
 
 
+#if defined USE_I2C3 && defined STM32F4
+
+extern void i2c3_hw_init(void);
+extern void i2c3_ev_irq_handler(void);
+extern void i2c3_er_irq_handler(void);
+
+
+#endif /* USE_I2C3 */
+
 #endif /* I2C_HW_H */

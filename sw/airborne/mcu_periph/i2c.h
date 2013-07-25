@@ -166,6 +166,14 @@ extern void i2c2_init(void);
 
 #endif /* USE_I2C2 */
 
+
+#ifdef USE_I2C3
+
+extern struct i2c_periph i2c3;
+extern void i2c3_init(void);
+
+#endif /* USE_I2C3 */
+
 extern void   i2c_init(struct i2c_periph* p);
 extern bool_t i2c_idle(struct i2c_periph* p);
 extern bool_t i2c_submit(struct i2c_periph* p, struct i2c_transaction* t);
