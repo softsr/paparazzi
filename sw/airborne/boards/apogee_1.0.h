@@ -1,5 +1,5 @@
-#ifndef CONFIG_APOGEE_0_99_H
-#define CONFIG_APOGEE_0_99_H
+#ifndef CONFIG_APOGEE_1_00_H
+#define CONFIG_APOGEE_1_00_H
 
 #define BOARD_APOGEE
 
@@ -112,18 +112,11 @@
 
 #define POWER_SWITCH_LED 9
 
-/* Uart2 RX polarity, on PB13, 1 on LED_ON, 0 on LED_OFF */
-#ifndef USE_LED_10
-#define USE_LED_10 1
-#endif
-#define LED_10_GPIO GPIOB
-#define LED_10_GPIO_CLK RCC_AHB1ENR_IOPBEN
-#define LED_10_GPIO_PIN GPIO13
-#define LED_10_GPIO_ON gpio_set
-#define LED_10_GPIO_OFF gpio_clear
-#define LED_10_AFIO_REMAP ((void)0)
 
-#define RC_POLARITY_LED 10
+/* Pint to set Uart2 RX polarity, on PB13, output high inverts, low doesn't */
+#define RC_POLARITY_GPIO_PORT GPIOB
+#define RC_POLARITY_GPIO_PIN GPIO13
+
 
 /* Default actuators driver */
 #define DEFAULT_ACTUATORS "subsystems/actuators/actuators_pwm.h"
@@ -403,4 +396,4 @@
 #define SPEKTRUM_UART2_ISR usart2_isr
 #define SPEKTRUM_UART2_DEV USART2
 
-#endif /* CONFIG_APOGEE_0_99_H */
+#endif /* CONFIG_APOGEE_1_00_H */
