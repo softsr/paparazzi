@@ -3,7 +3,6 @@
 <airframe name="KroozSD fixedwing example">
 
   <modules>
-    <load name="osd_max7456.xml"/>
   </modules>
 
   <firmware name="fixedwing">
@@ -105,7 +104,6 @@
   </section>
 
   <section name="BAT">
-    <define name="LOW_BAT_LEVEL" value="10.3" unit="V"/>
     <define name="CATASTROPHIC_BAT_LEVEL" value="9.3" unit="V"/>
     <define name="MilliAmpereOfAdc(_adc)" value="(_adc-156)*18.2"/>
   </section>
