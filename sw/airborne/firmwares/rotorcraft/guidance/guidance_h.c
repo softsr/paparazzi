@@ -515,7 +515,7 @@ static inline void transition_run(void) {
 static void read_rc_setpoint_speed_i(struct Int32Vect2 *speed_sp, bool_t in_flight) {
   if (in_flight) {
     // negative pitch is forward
-    int64_t rc_x = -radio_control.values[RADIO_PITCH];
+    int64_t rc_x = radio_control.values[RADIO_PITCH];
     int64_t rc_y = radio_control.values[RADIO_ROLL];
     DeadBand(rc_x, MAX_PPRZ/20);
     DeadBand(rc_y, MAX_PPRZ/20);
@@ -526,15 +526,15 @@ static void read_rc_setpoint_speed_i(struct Int32Vect2 *speed_sp, bool_t in_flig
     //int32_t rc_norm = sqrtf(rc_x * rc_x + rc_y * rc_y);
     //int32_t max_pprz = rc_norm * MAX_PPRZ / Max(abs(rc_x), abs(rc_y);
     rc_x = rc_x * max_speed / MAX_PPRZ;
-    rc_y = rc_y * max_speed / MAX_PPRZ;
+    rc_y = -rc_y * max_speed / MAX_PPRZ;
 
-    /* Rotate from body to NED frame by negative psi angle */
-    int32_t psi = -stateGetNedToBodyEulers_i()->psi;
+    /* Rotate from body to NED frame by psi angle */
+    int32_t psi = stateGetNedToBodyEulers_i()->psi;
     int32_t s_psi, c_psi;
     PPRZ_ITRIG_SIN(s_psi, psi);
     PPRZ_ITRIG_COS(c_psi, psi);
-    speed_sp->x = (int32_t)(( (int64_t)c_psi * rc_x + (int64_t)s_psi * rc_y) >> INT32_TRIG_FRAC);
-    speed_sp->y = (int32_t)((-(int64_t)s_psi * rc_x + (int64_t)c_psi * rc_y) >> INT32_TRIG_FRAC);
+    speed_sp->x = (int32_t)((-(int64_t)c_psi * rc_x + (int64_t)s_psi * rc_y) >> INT32_TRIG_FRAC);
+    speed_sp->y = (int32_t)((-(int64_t)s_psi * rc_x - (int64_t)c_psi * rc_y) >> INT32_TRIG_FRAC);
   }
   else {
     speed_sp->x = 0;
