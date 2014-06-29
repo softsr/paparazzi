@@ -41,8 +41,17 @@
 
   <firmware name="test_progs">
     <target name="test_sys_time_timer" board="lisa_mx_2.0"/>
+    <target name="test_adc" board="lisa_mx_2.0"/>
     <target name="test_telemetry" board="lisa_mx_2.0"/>
+    <target name="test_radio_control" board="lisa_mx_2.0">
+      <subsystem name="radio_control" type="spektrum">
+        <define name="RADIO_MODE" value="RADIO_AUX1"/>
+        <configure name="USE_SECONDARY_SPEKTRUM_RECEIVER" value="0"/>
+      </subsystem>
+    </target>
   </firmware>
+
+  <autopilot name="rotorcraft_autopilot.xml" freq="512"/>
 
   <modules>
     <load name="adc_generic.xml">
@@ -184,11 +193,6 @@
   </section>
 
   <section name="GUIDANCE_V" prefix="GUIDANCE_V_">
-    <define name="MIN_ERR_Z"   value="POS_BFP_OF_REAL(-10.)"/>
-    <define name="MAX_ERR_Z"   value="POS_BFP_OF_REAL( 10.)"/>
-    <define name="MIN_ERR_ZD"  value="SPEED_BFP_OF_REAL(-10.)"/>
-    <define name="MAX_ERR_ZD"  value="SPEED_BFP_OF_REAL( 10.)"/>
-    <define name="MAX_SUM_ERR" value="2000000"/>
     <define name="HOVER_KP"    value="150"/>
     <define name="HOVER_KD"    value="80"/>
     <define name="HOVER_KI"    value="20"/>

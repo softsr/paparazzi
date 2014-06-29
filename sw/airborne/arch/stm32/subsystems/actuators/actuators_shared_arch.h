@@ -34,16 +34,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
-
-
-
-#if defined(STM32F1)
-//#define PCLK 72000000
-#define PCLK AHB_CLK
-#elif defined(STM32F4)
-//#define PCLK 84000000
-#define PCLK AHB_CLK/2
-#endif
+#include "mcu_arch.h"
 
 #define ONE_MHZ_CLK 1000000
 
@@ -52,24 +43,6 @@
 #define PWM_BASE_FREQ ONE_MHZ_CLK
 #endif
 
-#ifdef STM32F1
-/**
- * HCLK = 72MHz, Timer clock also 72MHz since
- * TIM1_CLK = APB2 = 72MHz
- * TIM2_CLK = 2 * APB1 = 2 * 32MHz
- */
-#define TIMER_APB1_CLK AHB_CLK
-#define TIMER_APB2_CLK AHB_CLK
-#endif
-
-#ifdef STM32F4
-/* Since APB prescaler != 1 :
- * Timer clock frequency (before prescaling) is twice the frequency
- * of the APB domain to which the timer is connected.
- */
-#define TIMER_APB1_CLK (rcc_ppre1_frequency * 2)
-#define TIMER_APB2_CLK (rcc_ppre2_frequency * 2)
-#endif
 
 /** Default servo update rate in Hz */
 #ifndef SERVO_HZ
@@ -92,6 +65,9 @@
 #ifndef TIM5_SERVO_HZ
 #define TIM5_SERVO_HZ SERVO_HZ
 #endif
+#ifndef TIM8_SERVO_HZ
+#define TIM8_SERVO_HZ SERVO_HZ
+#endif
 #ifndef TIM9_SERVO_HZ
 #define TIM9_SERVO_HZ SERVO_HZ
 #endif
@@ -99,20 +75,7 @@
 #define TIM12_SERVO_HZ SERVO_HZ
 #endif
 
-
-/** @todo: these should go into libopencm3 */
-#define TIM9				TIM9_BASE
-#define TIM12				TIM12_BASE
-
-
-#if defined(STM32F4)
-extern void set_servo_gpio(uint32_t gpioport, uint16_t pin, uint8_t af_num, enum rcc_periph_clken clken);
-#elif defined(STM32F1)
-extern void set_servo_gpio(uint32_t gpioport, uint16_t pin, uint8_t none __attribute__((unused)), enum rcc_periph_clken clken);
-#endif
-
 extern void actuators_pwm_arch_channel_init(uint32_t timer_peripheral, enum tim_oc_id oc_id);
-
 extern void set_servo_timer(uint32_t timer, uint32_t period, uint8_t channels_mask);
 
 #endif /* ACTUATORS_PWM_SHARED_ARCH_H */

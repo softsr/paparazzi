@@ -24,18 +24,18 @@
  *
  */
 
-#include "firmwares/rotorcraft/guidance/guidance_h.h"
+#include "generated/airframe.h"
 
+#include "firmwares/rotorcraft/guidance/guidance_h.h"
 #include "firmwares/rotorcraft/stabilization.h"
 #include "firmwares/rotorcraft/stabilization/stabilization_attitude_rc_setpoint.h"
 #include "firmwares/rotorcraft/navigation.h"
+#include "subsystems/radio_control.h"
 
 /* for guidance_v_thrust_coeff */
 #include "firmwares/rotorcraft/guidance/guidance_v.h"
 
 #include "state.h"
-
-#include "generated/airframe.h"
 
 #ifndef GUIDANCE_H_AGAIN
 #define GUIDANCE_H_AGAIN 0
@@ -446,7 +446,7 @@ static void guidance_h_traj_run(bool_t in_flight) {
     ((guidance_h_again * guidance_h_accel_ref.x) >> 8);   /* acceleration feedforward gain */
   guidance_h_cmd_earth.y =
     pd_y +
-    ((guidance_h_vgain * guidance_h_speed_ref.x) >> 17) + /* speed feedforward gain */
+    ((guidance_h_vgain * guidance_h_speed_ref.y) >> 17) + /* speed feedforward gain */
     ((guidance_h_again * guidance_h_accel_ref.y) >> 8);   /* acceleration feedforward gain */
 
   /* trim max bank angle from PD */
