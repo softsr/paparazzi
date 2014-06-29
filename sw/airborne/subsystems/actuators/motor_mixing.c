@@ -92,6 +92,11 @@ static const int32_t yaw_coef[MOTOR_MIXING_NB_MOTOR]    = MOTOR_MIXING_YAW_COEF;
 static const int32_t thrust_coef[MOTOR_MIXING_NB_MOTOR] = MOTOR_MIXING_THRUST_COEF;
 
 struct MotorMixing motor_mixing;
+#if MOTOR_MIXING_SIMONK_CALIBRATE
+#include "mcu_periph/sys_time.h"
+uint32_t calibrate_timer;
+uint8_t calibrated;
+#endif
 
 void motor_mixing_init(void) {
   uint8_t i;
@@ -106,6 +111,9 @@ void motor_mixing_init(void) {
   }
   motor_mixing.nb_failure = 0;
   motor_mixing.nb_saturation = 0;
+#if MOTOR_MIXING_SIMONK_CALIBRATE
+  calibrated = 0;
+#endif
 }
 
 __attribute__ ((always_inline)) static inline void offset_commands(int32_t offset) {
@@ -224,6 +232,19 @@ void motor_mixing_run(bool_t motors_on, bool_t override_on, pprz_t in_cmd[] ) {
   }
   else {
     for (i=0; i<MOTOR_MIXING_NB_MOTOR; i++) {
+#if MOTOR_MIXING_SIMONK_CALIBRATE
+      if(calibrated < 2) {
+        if(calibrated == 0) {
+          SysTimeTimerStart(calibrate_timer);
+          calibrated = 1;
+        }
+        else
+          if(SysTimeTimer(calibrate_timer) > 1000000)
+            calibrated = 2;
+        motor_mixing.commands[i] = MOTOR_MIXING_MAX_MOTOR;
+      }
+      else
+#endif
       motor_mixing.commands[i] = MOTOR_MIXING_STOP_MOTOR;
     }
   }
